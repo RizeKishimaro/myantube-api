@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  name           String          @db.VarChar(255)
+  email          String          @unique @db.VarChar(255)
+  picture        String?
+  comments       Comment[]
+  videos         Video[]
+  createdAt      DateTime        @default(now())
+  commentRatings CommentRating[]
+  videoRatings   VideoRating[]
+  subscribers    Subscriber[]    @relation("subscriber")
+  subscriptions  Subscriber[]    @relation("channel")
+}
+
+enum Provider {
+  google
+  facebook
+  // add other providers as needed
+}
+
+model Comment {
+  id            Int             @id @default(autoincrement())
+  content       String
+  author        User            @relation(fields: [userId], references: [id])
+  userId        Int
+  createdAt     DateTime        @default(now())
+  CommentRating CommentRating[]
+}
+
+model CommentRating {
+  id        Int     @id @default(autoincrement())
+  likes     Int
+  dislikes  Int
+  comment   Comment @relation(fields: [commentId], references: [id])
+  commentId Int
+  User      User?   @relation(fields: [userId], references: [id])
+  userId    Int?
+}
+
+model VideoRating {
+  id       Int   @id @default(autoincrement())
+  likes    Int
+  dislikes Int
+  video    Video @relation(fields: [videoId], references: [id])
+  videoId  Int
+  User     User? @relation(fields: [userId], references: [id])
+  userId   Int?
+}
+
+model Video {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String?
+  url         String        @unique
+  author      User          @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime      @default(now())
+  ratings     VideoRating[]
+}
+
+model Subscriber {
+  id           Int  @id @default(autoincrement())
+  subscriberId Int
+  channelId    Int
+  subscriber   User @relation("subscriber", fields: [subscriberId], references: [id])
+  channel      User @relation("channel", fields: [channelId], references: [id])
+}

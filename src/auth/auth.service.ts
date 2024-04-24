@@ -1,11 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { CreateAuthDto } from "./dto/create-auth.dto";
+import { UpdateAuthDto } from "./dto/update-auth.dto";
+import { AuthDTO } from "./dto/auth.dto";
+import { UsersService } from "src/users/users.service";
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly userService: UsersService) {}
+  yuriCheck(credentials: AuthDTO) {
+    const isItSenpai = this.userService.checkSenpai(credentials);
+    if (!isItSenpai) {
+      throw new BadRequestException({code: 119,message:"You're Not Senpai."});
+    }
+    return { statusCode: 200 , messaage: "Welcome Senpai"};
+  }
   create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+    return "This action adds a new auth";
   }
 
   findAll() {
