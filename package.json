@@ -28,6 +28,10 @@
     "@prisma/client": "^5.12.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+<<<<<<< HEAD
+=======
+    "prisma": "^5.12.1",
+>>>>>>> 7d349d8ee1a553d88ca16d2c672790ef8a9b6510
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
