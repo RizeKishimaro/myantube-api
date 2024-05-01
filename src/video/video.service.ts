@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { PrismaService } from 'src/utils/prisma.service';
 
 @Injectable()
 export class VideoService {
+  constructor(private readonly prismaService: PrismaService){
+
+  }
   create(createVideoDto: CreateVideoDto) {
-    return 'This action adds a new video';
+    return "goffy ahhhh" ;
   }
 
   findAll() {
-    return `This action returns all video`;
+    const videos = this.prismaService.video.findMany();
+    return videos;
   }
 
   findOne(id: number) {
