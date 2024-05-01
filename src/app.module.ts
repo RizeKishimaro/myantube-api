@@ -6,10 +6,11 @@ import { UsersModule } from "./users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { StreamModule } from "./stream/stream.module";
 import { VideoModule } from './video/video.module';
-import { PrismaService } from "./utils/prisma.service";
+import { PrismaModule } from "./utils/prisma.module";
 
 @Module({
   imports: [
+    PrismaModule,
     AuthModule,
     UsersModule,
     JwtModule.register({
@@ -23,6 +24,6 @@ import { PrismaService } from "./utils/prisma.service";
     VideoModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}
