@@ -18,7 +18,7 @@ model User {
   name             String          @db.VarChar(255)
   email            String          @unique @db.VarChar(255)
   picture          String?
-  isActive         Boolean
+  isActive         Boolean         @default(false)
   comments         Comment[]
   videos           Video[]
   createdAt        DateTime        @default(now())
