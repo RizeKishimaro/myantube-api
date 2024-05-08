@@ -31,11 +31,11 @@ model User {
 }
 
 model ActivationCode {
-  id        Int      @id @unique @default(autoincrement())
+  id        Int       @id @unique @default(autoincrement())
   code      String
-  expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
+  expiresAt DateTime?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @unique
 }
 
 enum Provider {
