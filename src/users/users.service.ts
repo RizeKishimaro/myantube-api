@@ -5,7 +5,7 @@ import { PrismaService } from 'src/utils/prisma.service';
 import { CreateUserDto } from './dto/createuser.dto';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async createUser(createUserDto: CreateUserDto) {
@@ -14,13 +14,14 @@ export class UserService {
       data: {
         email: createUserDto.email,
         password: hashedPassword,
+
       },
     });
   }
 
-  async activateAccount(code: string) {
+  async activateAccount(code: any) {
     const activationCode = await this.prisma.activationCode.findUnique({
-      where: { code },
+      where: {code},
       include: { user: true },
     });
 

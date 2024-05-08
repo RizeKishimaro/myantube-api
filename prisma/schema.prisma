@@ -14,25 +14,25 @@ datasource db {
 }
 
 model User {
-  id               Int             @id @unique @default(autoincrement())
-  name             String          @db.VarChar(255)
-  email            String          @unique @db.VarChar(255)
-  picture          String?
-  isActive         Boolean         @default(false)
-  comments         Comment[]
-  videos           Video[]
-  createdAt        DateTime        @default(now())
-  commentRatings   CommentRating[]
-  videoRatings     VideoRating[]
-  subscribers      Subscriber[]    @relation("subscriber")
-  subscriptions    Subscriber[]    @relation("channel")
-  activationCode   ActivationCode? // Prisma will infer the relation based on activationCodeId
-  activationCodeId Int?            @unique
+  id             Int             @id @unique @default(autoincrement())
+  name           String          @db.VarChar(255)
+  password       String
+  email          String          @unique @db.VarChar(255)
+  picture        String?
+  isActive       Boolean         @default(false)
+  comments       Comment[]
+  videos         Video[]
+  createdAt      DateTime        @default(now())
+  commentRatings CommentRating[]
+  videoRatings   VideoRating[]
+  subscribers    Subscriber[]    @relation("subscriber")
+  subscriptions  Subscriber[]    @relation("channel")
+  activationCode ActivationCode?
 }
 
 model ActivationCode {
   id        Int       @id @unique @default(autoincrement())
-  code      String
+  code      String    @unique
   expiresAt DateTime?
   user      User      @relation(fields: [userId], references: [id])
   userId    Int       @unique
