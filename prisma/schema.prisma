@@ -27,7 +27,7 @@ model User {
   subscribers      Subscriber[]    @relation("subscriber")
   subscriptions    Subscriber[]    @relation("channel")
   activationCode   ActivationCode? // Prisma will infer the relation based on activationCodeId
-  activationCodeId Int?
+  activationCodeId Int?            @unique
 }
 
 model ActivationCode {
