@@ -15,6 +15,8 @@ export class EmailService {
         pass: this.configService.get<string>('GMAIL_PASSWORD'),
       },
     });
+    console.log(this.configService.get("GMAIL_USER"))
+    console.log(this.configService.get("GMAIL_PASSWORD"))
     const mailOptions = {
       from: this.configService.get<string>('GMAIL_USER'),
       to,
