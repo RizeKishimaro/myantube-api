@@ -12,14 +12,14 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     return this.prisma.user.create({
       data: {
+        name: createUserDto.name,
         email: createUserDto.email,
         password: hashedPassword,
-
       },
     });
   }
 
-  async activateAccount(code: any) {
+  async activateAccount(code: string) {
     const activationCode = await this.prisma.activationCode.findUnique({
       where: {code},
       include: { user: true },
