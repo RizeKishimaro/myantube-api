@@ -1,5 +1,5 @@
 // user/user.service.ts
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/utils/prisma.service';
 import { CreateUserDto } from './dto/createuser.dto';
@@ -20,9 +20,10 @@ export class UserService {
       },
     });
     const activationCode = randomUUID();
+    const timeLimit = new Date((new Date().setHours(new Date().getHours() + 3))).toISOString(); 
     console.log(activationCode);
     await this.prisma.activationCode.create({
-      data:{code: activationCode, userId: userInfo.id} 
+      data:{code: activationCode,expiresAt:timeLimit , userId: userInfo.id} 
     })
     const messageTemplate = `Account Creation Successful please use ${activationCode} to verify your account.`
     await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",messageTemplate)
@@ -35,7 +36,7 @@ export class UserService {
     });
 
     if (!activationCode || activationCode.expiresAt < new Date()) {
-      throw new Error('Invalid or expired activation code.');
+      throw new BadRequestException('Invalid or expired activation code.');
     }
 
     await this.prisma.user.update({
