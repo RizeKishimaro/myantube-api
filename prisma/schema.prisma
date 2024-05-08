@@ -14,17 +14,28 @@ datasource db {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  name           String          @db.VarChar(255)
-  email          String          @unique @db.VarChar(255)
-  picture        String?
-  comments       Comment[]
-  videos         Video[]
-  createdAt      DateTime        @default(now())
-  commentRatings CommentRating[]
-  videoRatings   VideoRating[]
-  subscribers    Subscriber[]    @relation("subscriber")
-  subscriptions  Subscriber[]    @relation("channel")
+  id               Int             @id @unique @default(autoincrement())
+  name             String          @db.VarChar(255)
+  email            String          @unique @db.VarChar(255)
+  picture          String?
+  isActive         Boolean
+  comments         Comment[]
+  videos           Video[]
+  createdAt        DateTime        @default(now())
+  commentRatings   CommentRating[]
+  videoRatings     VideoRating[]
+  subscribers      Subscriber[]    @relation("subscriber")
+  subscriptions    Subscriber[]    @relation("channel")
+  activationCode   ActivationCode? // Prisma will infer the relation based on activationCodeId
+  activationCodeId Int?
+}
+
+model ActivationCode {
+  id        Int      @id @unique @default(autoincrement())
+  code      String
+  expiresAt DateTime @default(dbgenerated("now() + interval 1 day"))
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
 }
 
 enum Provider {
