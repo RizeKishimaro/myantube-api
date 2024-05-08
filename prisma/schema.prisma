@@ -33,7 +33,7 @@ model User {
 model ActivationCode {
   id        Int      @id @unique @default(autoincrement())
   code      String
-  expiresAt DateTime @default(dbgenerated("now() + interval 1 day"))
+  expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id])
   userId    Int      @unique
 }
