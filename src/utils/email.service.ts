@@ -15,13 +15,19 @@ export class EmailService {
         pass: this.configService.get<string>('GMAIL_PASSWORD'),
       },
     });
-
-    await transporter.sendMail({
+    const mailOptions = {
       from: this.configService.get<string>('GMAIL_USER'),
       to,
       subject,
       text,
-    });
+    }
+transporter.sendMail(mailOptions, (error, info) => {          
+  if (error) {                                                
+    console.log('Error occurred:', error.message);            
+    return;                                                   
+  }                                                           
+  console.log('Email sent successfully:', info.messageId);    
+});
   }
 }
 
