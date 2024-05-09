@@ -1,9 +1,9 @@
 // user/user.service.ts
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { PrismaService } from 'src/utils/prisma.service';
+import { PrismaService } from '../utils/prisma.service';
 import { CreateUserDto } from './dto/createuser.dto';
-import { EmailService } from 'src/utils/email.service';
+import { EmailService } from '../utils/email.service';
 import { randomUUID } from 'crypto';
 
 @Injectable()
