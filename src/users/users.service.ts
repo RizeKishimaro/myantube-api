@@ -21,12 +21,10 @@ export class UserService {
     });
     const activationCode = randomUUID();
     const timeLimit = new Date((new Date().setHours(new Date().getHours() + 3))).toISOString(); 
-    console.log(activationCode);
     await this.prisma.activationCode.create({
       data:{code: activationCode,expiresAt:timeLimit , userId: userInfo.id} 
     })
-    const messageTemplate = `Account Creation Successful please use ${activationCode} to verify your account.`
-    await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",messageTemplate)
+    await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",activationCode)
   }
 
   async activateAccount(code: string) {
