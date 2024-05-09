@@ -19,7 +19,7 @@ export class EmailService {
         pass: this.configService.get<string>('GMAIL_PASSWORD'),
       },
     });
-    const renderedTemplate = ejs.render(emailTemplate, { activationLink: `http://127.0.0.1:3000/activate/${code}` });
+    const renderedTemplate = ejs.render(emailTemplate, { activationLink: `http://127.0.0.1:3000/users/activate/${code}` });
     const mailOptions = {
       from: this.configService.get<string>('GMAIL_USER'),
       to,
