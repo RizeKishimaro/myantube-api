@@ -11,7 +11,7 @@ export class EmailService {
   constructor(private configService: ConfigService) {}
 
   async sendEmail(to: string, subject: string,code: string) {
-    const emailTemplate = readFileSync(join(process.cwd(),"public","templates"))
+    const emailTemplate = readFileSync(join(process.cwd(),"public","templates","email.ejs"))
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
