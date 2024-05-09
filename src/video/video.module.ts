@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { VideoController } from './video.controller';
-import { PrismaService } from 'src/utils/prisma.service';
+import { PrismaService } from '../utils/prisma.service';
 
 @Module({
   controllers: [VideoController],
