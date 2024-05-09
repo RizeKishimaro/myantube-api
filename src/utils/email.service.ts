@@ -26,12 +26,17 @@ export class EmailService {
       subject,
       html: renderedTemplate,
     }
-transporter.sendMail(mailOptions, (error, info) => {          
-  if (error) {                                                
-    console.log('Error occurred:', error.message);            
-    return;                                                   
-  }                                                           
-  console.log('Email sent successfully:', info.messageId);    
+    await new Promise((resolve, reject) => {
+    // send mail
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.error(err);
+            reject(err);
+        } else {
+            console.log(info);
+            resolve(info);
+        }
+    });
 });
   }
 }
