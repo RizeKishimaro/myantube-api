@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   getHello(@Req() req): string {
-    console.log(req.protocol + '://' + req.get('host') + req.originalUrl;)
+    console.log(req.protocol + '://' + req.get('host') + req.originalUrl)
     return this.appService.getHello();
   }
 }
