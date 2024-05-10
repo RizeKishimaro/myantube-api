@@ -11,8 +11,8 @@ export class UserController {
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto,@Req() req) {
     const hosturl = req.protocol + '://' + req.get('host');
-    return await this.userService.createUser(createUserDto,hosturl);
-   // return { message: 'User created. Check your email for activation link.' };
+    await this.userService.createUser(createUserDto,hosturl);
+    return { message: 'User created. Check your email for activation link.' };
   }
 
   @Get('activate/:code')

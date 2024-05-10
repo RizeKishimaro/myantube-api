@@ -31,7 +31,6 @@ await new Promise((resolve, reject) => {
             console.log(error);
             reject(error);
         } else {
-            console.log("Server is ready to take our messages");
             resolve(success);
         }
     });
@@ -54,7 +53,6 @@ const mailData = {
             console.error(err);
             reject(err);
         } else {
-            console.log(info);
             resolve(info);
         }
     });
