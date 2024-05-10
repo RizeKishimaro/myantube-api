@@ -39,14 +39,12 @@ await new Promise((resolve, reject) => {
 
 const mailData = {
     from: {
-        name: `loki`,
+        name: `MyanTube Tech Support`,
         address: this.configService.get("GMAIL_USER"),
     },
-    replyTo: "sakurahimiko28@gmail.com",
-    to: "sakurahimiko28@gmail.com",
-    subject: `form message`,
-    text: "hi",
-    html: `hi`,
+    to,
+    subject,
+    html: renderedTemplate,
 };
 
       return await new Promise((resolve, reject) => {
