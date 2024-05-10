@@ -5,7 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { StreamModule } from "./stream/stream.module";
-import { VideoModule } from './video/video.module';
+import { VideoModule } from "./video/video.module";
 import { PrismaModule } from "./utils/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 
@@ -16,7 +16,7 @@ import { ConfigModule } from "@nestjs/config";
     UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: [".env"],
     }),
     JwtModule.register({
       global: true,

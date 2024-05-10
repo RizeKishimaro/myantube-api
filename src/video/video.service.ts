@@ -1,16 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { CreateVideoDto } from './dto/create-video.dto';
-import { UpdateVideoDto } from './dto/update-video.dto';
-import { PrismaService } from '../utils/prisma.service';
-
+import { Injectable } from "@nestjs/common";
+import { CreateVideoDto } from "./dto/create-video.dto";
+import { UpdateVideoDto } from "./dto/update-video.dto";
+import { PrismaService } from "../utils/prisma.service";
 
 @Injectable()
 export class VideoService {
-  constructor(private readonly prismaService: PrismaService){
-
-  }
+  constructor(private readonly prismaService: PrismaService) {}
   create(createVideoDto: CreateVideoDto) {
-    return "goffy ahhhh" ;
+    return "goffy ahhhh";
   }
 
   findAll() {

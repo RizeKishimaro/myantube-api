@@ -7,6 +7,6 @@ import { EmailService } from "../utils/email.service";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, UserService,PrismaService,EmailService],
+  providers: [AuthService, UserService, PrismaService, EmailService],
 })
 export class AuthModule {}

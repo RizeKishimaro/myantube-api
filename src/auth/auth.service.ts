@@ -12,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async yuriCheck(credentials: AuthDTO) {
-    const isItSenpai = true
+    const isItSenpai = true;
     if (!isItSenpai) {
       throw new BadRequestException({
         code: 119,
