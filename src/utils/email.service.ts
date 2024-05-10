@@ -27,13 +27,9 @@ export class EmailService {
         user: this.configService.get<string>('GMAIL_USER'),
         pass: this.configService.get<string>('GMAIL_PASSWORD'),
       },
-    }).sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log(info);
-        }
-    });
+    }).verify((err,success)=>{
+        console.log(err,success)
+      })
   }
   catch(error){
     console.log(error)
