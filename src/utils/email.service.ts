@@ -44,7 +44,7 @@ const mailData = {
     html: `hi`,
 };
 
- await new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
     // send mail
     transporter.sendMail(mailData, (err, info) => {
         if (err) {
