@@ -28,6 +28,7 @@ export class UserService {
     const timeLimit = new Date(
       new Date().setHours(new Date().getHours() + 3),
     ).toISOString();
+    console.log(new Date().toISOString() , new Date().toISOString() > timeLimit);
     await this.prisma.activationCode.create({
       data: { code: activationCode, expiresAt: timeLimit, userId: userInfo.id },
     });
@@ -59,18 +60,21 @@ export class UserService {
     });
   }
  async  resendActivationCode(email: string) {
-    const code = await this.prisma.activationCode.findMany({
+    const code = await this.prisma.activationCode.findFirst({
       where: {
+        expiresAt: {
+          gte: new Date().toISOString()
+        },
         user: {
           email,
         },
       },
       include: { user: true },
     });
-    if (!code) {
+    if (code) {
       console.log("not existed");
-      this.responseHelper.sendErrorMessage(400, "Code Already Exist", 10);
     } else {
+
       console.log("existes ");
     }
     return this.responseHelper.sendSuccessMessage(
