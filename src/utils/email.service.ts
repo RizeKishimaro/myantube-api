@@ -11,33 +11,33 @@ export class EmailService {
   constructor(private configService: ConfigService) {}
 
   async sendEmail(to: string, subject: string,code: string) {
+    try{
     const emailTemplate = readFileSync(join(process.cwd(),"public","templates","email.ejs"),"utf-8")
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: this.configService.get<string>('GMAIL_USER'),
-        pass: this.configService.get<string>('GMAIL_PASSWORD'),
-      },
-    });
     const renderedTemplate = ejs.render(emailTemplate, { activationLink: `http://127.0.0.1:3000/users/activate/${code}` });
-    const mailOptions = {
+   
+      const mailOptions = {
       from: this.configService.get<string>('GMAIL_USER'),
       to,
       subject,
       html: renderedTemplate,
     }
-    await new Promise((resolve, reject) => {
-    // send mail
-    transporter.sendMail(mailOptions, (err, info) => {
+      await nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: this.configService.get<string>('GMAIL_USER'),
+        pass: this.configService.get<string>('GMAIL_PASSWORD'),
+      },
+    }).sendMail(mailOptions, (err, info) => {
         if (err) {
             console.error(err);
-            reject(err);
         } else {
             console.log(info);
-            resolve(info);
         }
     });
-});
+  }
+  catch(error){
+    console.log(error)
+  }
   }
 }
 
