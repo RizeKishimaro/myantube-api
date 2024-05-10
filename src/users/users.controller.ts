@@ -1,5 +1,5 @@
 // user/user.controller.ts
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Req } from '@nestjs/common';
 import { ActivationDto } from './dto/activation.dto';
 import { CreateUserDto } from './dto/createuser.dto';
 import { UserService } from './users.service';
@@ -9,8 +9,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('signup')
-  async signUp(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.createUser(createUserDto);
+  async signUp(@Body() createUserDto: CreateUserDto,@Req() req) {
+    const hosturl = req.headers.host;
+    console.log(hosturl)
+    return await this.userService.createUser(createUserDto,hosturl);
    // return { message: 'User created. Check your email for activation link.' };
   }
 

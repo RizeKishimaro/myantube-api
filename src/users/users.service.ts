@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 export class UserService {
   constructor(private prisma: PrismaService, private emailService:EmailService) {}
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto,hostUrl:string) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const userInfo = await this.prisma.user.create({
       data: {
@@ -24,7 +24,7 @@ export class UserService {
     await this.prisma.activationCode.create({
       data:{code: activationCode,expiresAt:timeLimit , userId: userInfo.id} 
     })
-   return await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",activationCode)
+   return await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",activationCode,hostUrl)
   }
 
   async activateAccount(code: string) {

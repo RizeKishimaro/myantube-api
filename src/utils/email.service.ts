@@ -2,13 +2,18 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
-
+import * as ejs from "ejs"
+import { readFileSync } from 'fs';
+import { join } from 'path';
 @Injectable()
 export class EmailService {
   constructor(private configService: ConfigService) {}
 
-  async sendEmail(to: string, subject: string,code: string) {
+  async sendEmail(to: string, subject: string,code: string,hostUrl: string) {
     try{
+      const activationLink = `${hostUrl}/users/activate/${code}`;
+      const emailTemplate = readFileSync(join(process.cwd(),"public","templates","email.ejs"), "utf-8");
+      const renderedTemplate = ejs.render(emailTemplate, { activationLink });
       const transporter = nodemailer.createTransport({
     port: 465,
     host: "smtp.gmail.com",
