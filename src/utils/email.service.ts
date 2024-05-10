@@ -19,7 +19,7 @@ export class EmailService {
     secure: true,
 });
 
- new Promise((resolve, reject) => {
+await new Promise((resolve, reject) => {
     // verify connection configuration
     transporter.verify(function (error, success) {
         if (error) {
@@ -44,7 +44,7 @@ const mailData = {
     html: `hi`,
 };
 
- new Promise((resolve, reject) => {
+ await new Promise((resolve, reject) => {
     // send mail
     transporter.sendMail(mailData, (err, info) => {
         if (err) {

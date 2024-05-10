@@ -10,8 +10,8 @@ export class UserController {
 
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
-    await this.userService.createUser(createUserDto);
-    return { message: 'User created. Check your email for activation link.' };
+    return await this.userService.createUser(createUserDto);
+   // return { message: 'User created. Check your email for activation link.' };
   }
 
   @Get('activate/:code')
