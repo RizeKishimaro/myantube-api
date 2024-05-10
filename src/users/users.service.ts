@@ -25,10 +25,7 @@ export class UserService {
       },
     });
     const activationCode = randomUUID();
-    const timeLimit = new Date(
-      new Date().setHours(new Date().getHours() + 3),
-    ).toISOString();
-    console.log(new Date().toISOString() , new Date().toISOString() > timeLimit);
+    const timeLimit = new Date(new Date().setHours(new Date().getHours() + 3),).toISOString();
     await this.prisma.activationCode.create({
       data: { code: activationCode, expiresAt: timeLimit, userId: userInfo.id },
     });
@@ -46,6 +43,7 @@ export class UserService {
       include: { user: true },
     });
 
+    console.log(activationCode.expiresAt < new Date(),activationCode.expiresAt, new Date());
     if (!activationCode || activationCode.expiresAt < new Date()) {
       throw new BadRequestException("Invalid or expired activation code.");
     }
