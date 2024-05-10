@@ -20,4 +20,9 @@ export class UserController {
     await this.userService.activateAccount(activationDto.code);
     return { message: "Account activated successfully." };
   }
+
+  @Post("regenerate-code")
+  async generateActivationCode(email: string){
+    await this.userService.resendActivationCode(email)
+  }
 }

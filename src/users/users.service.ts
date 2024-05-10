@@ -58,8 +58,8 @@ export class UserService {
       where: { id: activationCode.id },
     });
   }
-  resendActivationCode(email: string) {
-    const code = this.prisma.activationCode.findMany({
+ async  resendActivationCode(email: string) {
+    const code = await this.prisma.activationCode.findMany({
       where: {
         user: {
           email,
