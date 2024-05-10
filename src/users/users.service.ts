@@ -24,7 +24,7 @@ export class UserService {
     await this.prisma.activationCode.create({
       data:{code: activationCode,expiresAt:timeLimit , userId: userInfo.id} 
     })
-    await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",activationCode)
+   return await this.emailService.sendEmail(createUserDto.email,"Activate Your Account",activationCode)
   }
 
   async activateAccount(code: string) {
