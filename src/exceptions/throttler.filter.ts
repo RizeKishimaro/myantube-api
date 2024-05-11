@@ -1,12 +1,13 @@
 import { Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ThrottlerException } from '@nestjs/throttler';
+import { Response } from "express"
 
 @Catch(ThrottlerException)
 export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
   catch(exception: ThrottlerException, host: ArgumentsHost) {
     const context = host.switchToHttp();
-    const response = context.getResponse();
+    const response:Response = context.getResponse();
     const request = context.getRequest();
 
     // Calculate retry time as 1 minute (60 seconds) from now
@@ -23,10 +24,10 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
     // Set Retry-After header in response
     const statusCode = exception.getStatus();
 
-    response.header({"retry-after": retryAfterSeconds.toString()}).status(statusCode).json({
+    response.setHeader("retry-after",retryAfterSeconds.toString()).status(statusCode).json({
       statusCode,
       message: `Rate limit exceeded. Please try again in ${retryAfterSeconds} seconds.`,
-    });
+    }).send();
   }
 }
 
