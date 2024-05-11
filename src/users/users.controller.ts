@@ -1,8 +1,9 @@
 // user/user.controller.ts
-import { Controller, Post, Body, Get, Param, Req } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { ActivationDto } from "./dto/activation.dto";
 import { CreateUserDto } from "./dto/createuser.dto";
 import { UserService } from "./users.service";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
 @Controller("users")
 export class UserController {
@@ -21,6 +22,7 @@ export class UserController {
     return { message: "Account activated successfully." };
   }
 
+  @UseGuards(ThrottlerGuard)
   @Post("regenerate-code")
   async generateActivationCode(email: string){
     await this.userService.resendActivationCode(email)

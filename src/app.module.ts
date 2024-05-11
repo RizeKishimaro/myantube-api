@@ -8,6 +8,7 @@ import { StreamModule } from "./stream/stream.module";
 import { VideoModule } from "./video/video.module";
 import { PrismaModule } from "./utils/prisma.module";
 import { ConfigModule } from "@nestjs/config";
+import { ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
   imports: [
@@ -24,7 +25,10 @@ import { ConfigModule } from "@nestjs/config";
       signOptions: {
         expiresIn: "7d",
       },
-    }),
+    }),ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 1,
+    }]),
     StreamModule,
     VideoModule,
   ],
