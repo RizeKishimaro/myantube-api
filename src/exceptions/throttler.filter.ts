@@ -1,4 +1,4 @@
-import { Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { Catch, ArgumentsHost} from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ThrottlerException } from '@nestjs/throttler';
 import { Response } from "express"
@@ -10,21 +10,19 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
     const response:Response = context.getResponse();
     const request = context.getRequest();
 
-    // Calculate retry time as 1 minute (60 seconds) from now
-    const now = Date.now(); // Current time in milliseconds
+    const now = Date.now();
     let retryAfterMilliseconds = now + 60000;
-    const differenceMilliseconds = retryAfterMilliseconds - now; // Difference in milliseconds
-   console.log(request.headers);
+    const differenceMilliseconds = retryAfterMilliseconds - now; 
     if(request.headers["retry-after"]){
-      console.log("existed")
-      retryAfterMilliseconds =  request.headers["retry-after"]+ 60000;
+      console.log(request.headers["retry-after"]);
+      retryAfterMilliseconds =  request.headers["retry-after"];
     }
-    const retryAfterSeconds = Math.ceil(differenceMilliseconds / 1000); // Convert difference to seconds (rounded up)
+    const retryAfterSeconds = Math.ceil(differenceMilliseconds / 1000); 
 
     // Set Retry-After header in response
     const statusCode = exception.getStatus();
 
-    response.setHeader("retry-after",retryAfterSeconds.toString()).status(statusCode).json({
+    response.setHeader("retry-after",retryAfterMilliseconds.toString()).status(statusCode).json({
       statusCode,
       message: `Rate limit exceeded. Please try again in ${retryAfterSeconds} seconds.`,
     }).send();
