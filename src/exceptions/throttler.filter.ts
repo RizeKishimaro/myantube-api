@@ -9,7 +9,7 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
     const request: Request = context.getRequest();
     const response = context.getResponse();
     
-    let ttlSeconds:number;
+    let ttlSeconds = Date.now()
     const statusCode = exception.getStatus();
     if(request.headers["Retry-After"]){ 
       ttlSeconds = Math.ceil(Date.now());
