@@ -25,7 +25,9 @@ export class UserService {
       },
     });
     const activationCode = randomUUID();
-    const timeLimit = new Date(new Date().setHours(new Date().getHours() + 3),).toISOString();
+    const timeLimit = new Date(
+      new Date().setHours(new Date().getHours() + 3),
+    ).toISOString();
     await this.prisma.activationCode.create({
       data: { code: activationCode, expiresAt: timeLimit, userId: userInfo.id },
     });
@@ -43,7 +45,11 @@ export class UserService {
       include: { user: true },
     });
 
-    console.log(activationCode.expiresAt < new Date(),activationCode.expiresAt, new Date());
+    console.log(
+      activationCode.expiresAt < new Date(),
+      activationCode.expiresAt,
+      new Date(),
+    );
     if (!activationCode || activationCode.expiresAt < new Date()) {
       throw new BadRequestException("Invalid or expired activation code.");
     }
@@ -57,11 +63,11 @@ export class UserService {
       where: { id: activationCode.id },
     });
   }
- async  resendActivationCode(email: string, hostUrl: string) {
+  async resendActivationCode(email: string, hostUrl: string) {
     const code = await this.prisma.activationCode.findFirst({
       where: {
         expiresAt: {
-          gte: new Date().toISOString()
+          gte: new Date().toISOString(),
         },
         user: {
           email,
@@ -70,19 +76,30 @@ export class UserService {
       include: { user: true },
     });
     if (!code) {
-    const activationCode = randomUUID();
-      const timeLimit = new Date(new Date().setHours(new Date().getHours() + 3),).toISOString();
-    await this.prisma.activationCode.create({
-       data: { code: activationCode, expiresAt: timeLimit, userId: code.userId}
-    });
+      const activationCode = randomUUID();
+      const timeLimit = new Date(
+        new Date().setHours(new Date().getHours() + 3),
+      ).toISOString();
+      await this.prisma.activationCode.create({
+        data: {
+          code: activationCode,
+          expiresAt: timeLimit,
+          userId: code.userId,
+        },
+      });
       return await this.emailService.sendEmail(
-      email,
-      "Activate Your Account",
-      activationCode,
-      hostUrl,
-    );
+        email,
+        "Activate Your Account",
+        activationCode,
+        hostUrl,
+      );
     } else {
-
+      return await this.emailService.sendEmail(
+        email,
+        "Activate Your Account",
+        code.code,
+        hostUrl,
+      );
       console.log("existes ");
     }
     return this.responseHelper.sendSuccessMessage(

@@ -8,6 +8,12 @@ import { ResponseHelper } from "../utils/responseHelper.service";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, UserService, PrismaService, EmailService,ResponseHelper],
+  providers: [
+    AuthService,
+    UserService,
+    PrismaService,
+    EmailService,
+    ResponseHelper,
+  ],
 })
 export class AuthModule {}

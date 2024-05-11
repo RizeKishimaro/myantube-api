@@ -25,10 +25,13 @@ import { ThrottlerModule } from "@nestjs/throttler";
       signOptions: {
         expiresIn: "7d",
       },
-    }),ThrottlerModule.forRoot([{
-      ttl: 180000,
-      limit: 1,
-    }]),
+    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 180000,
+        limit: 1,
+      },
+    ]),
     StreamModule,
     VideoModule,
   ],
