@@ -6,21 +6,21 @@ import { ThrottlerException } from '@nestjs/throttler';
 export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
   catch(exception: ThrottlerException, host: ArgumentsHost) {
     const context = host.switchToHttp();
+    const request: Request = context.getRequest();
     const response = context.getResponse();
-
-    const { message } = exception;
+    
+    let ttlSeconds:number;
     const statusCode = exception.getStatus();
+    if(request.headers["Retry-After"]){ 
+      ttlSeconds = Math.ceil(Date.now());
+    }
+    const retryAfter = ttlSeconds; 
 
-    // Calculate retry time based on TTL (time to live)
-    const ttlSeconds = Math.ceil(exception.getResponse()['ttl'] / 1000); // Convert TTL from milliseconds to seconds
-    const retryAfter = ttlSeconds; // Retry time in seconds
-
-    // Set Retry-After header in response
     response.setHeader('Retry-After', retryAfter.toString());
 
     response.status(statusCode).json({
       statusCode,
-      message: `Rate limit exceeded. Please try again in ${retryAfter} seconds.`,
+      message: `Rate limit exceeded. Please try again in ${retryAfter / 1000} seconds.`,
     });
   }
 }
