@@ -5,6 +5,7 @@ import { CreateUserDto } from "./dto/createuser.dto";
 import { UserService } from "./users.service";
 import { ThrottlerGuard } from "@nestjs/throttler";
 import { ThrottlerCustomExceptionFilter } from "../exceptions/throttler.filter";
+import {Request} from "express"
 
 @UseFilters(new ThrottlerCustomExceptionFilter())
 @Controller("users")
@@ -26,7 +27,8 @@ export class UserController {
 
   @UseGuards(ThrottlerGuard)
   @Post("regenerate-code")
-  async generateActivationCode(email: string){
-    await this.userService.resendActivationCode(email)
+  async generateActivationCode(@Req() req: Request, email: string){
+    const hosturl = req.protocol + "://" + req.get("host");
+    await this.userService.resendActivationCode(email,hosturl)
   }
 }

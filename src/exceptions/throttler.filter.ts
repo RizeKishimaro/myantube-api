@@ -19,7 +19,6 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
     const differenceMilliseconds = retryAfterMilliseconds - now;
     const retryAfterSeconds = Math.ceil(differenceMilliseconds / 1000); 
 
-    // Set Retry-After header in response
     const statusCode = exception.getStatus();
 
     response.setHeader("retry-after",retryAfterMilliseconds.toString()).status(statusCode).json({

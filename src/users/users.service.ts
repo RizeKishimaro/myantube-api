@@ -57,7 +57,7 @@ export class UserService {
       where: { id: activationCode.id },
     });
   }
- async  resendActivationCode(email: string) {
+ async  resendActivationCode(email: string, hostUrl: string) {
     const code = await this.prisma.activationCode.findFirst({
       where: {
         expiresAt: {
@@ -69,8 +69,18 @@ export class UserService {
       },
       include: { user: true },
     });
-    if (code) {
-      console.log("not existed");
+    if (!code) {
+    const activationCode = randomUUID();
+      const timeLimit = new Date(new Date().setHours(new Date().getHours() + 3),).toISOString();
+    await this.prisma.activationCode.create({
+       data: { code: activationCode, expiresAt: timeLimit, userId: code.userId}
+    });
+      return await this.emailService.sendEmail(
+      email,
+      "Activate Your Account",
+      activationCode,
+      hostUrl,
+    );
     } else {
 
       console.log("existes ");
