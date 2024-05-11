@@ -23,7 +23,7 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
     // Set Retry-After header in response
     const statusCode = exception.getStatus();
 
-    response.set({"retry-after": retryAfterSeconds.toString()}).status(statusCode).json({
+    response.header({"retry-after": retryAfterSeconds.toString()}).status(statusCode).json({
       statusCode,
       message: `Rate limit exceeded. Please try again in ${retryAfterSeconds} seconds.`,
     });
