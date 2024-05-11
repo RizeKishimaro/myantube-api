@@ -12,11 +12,11 @@ export class ThrottlerCustomExceptionFilter extends BaseExceptionFilter {
 
     const now = Date.now();
     let retryAfterMilliseconds = now + 180000;
-    const differenceMilliseconds = retryAfterMilliseconds - now; 
     if(request.headers["retry-after"]){
       console.log(request.headers["retry-after"]);
       retryAfterMilliseconds =  request.headers["retry-after"];
     }
+    const differenceMilliseconds = retryAfterMilliseconds - now;
     const retryAfterSeconds = Math.ceil(differenceMilliseconds / 1000); 
 
     // Set Retry-After header in response
