@@ -1,10 +1,12 @@
 // user/user.controller.ts
-import { Controller, Post, Body, Get, Param, Req, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Req, UseGuards, UseFilters } from "@nestjs/common";
 import { ActivationDto } from "./dto/activation.dto";
 import { CreateUserDto } from "./dto/createuser.dto";
 import { UserService } from "./users.service";
 import { ThrottlerGuard } from "@nestjs/throttler";
+import { ThrottlerCustomExceptionFilter } from "../exceptions/throttler.filter";
 
+@UseFilters(new ThrottlerCustomExceptionFilter())
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
