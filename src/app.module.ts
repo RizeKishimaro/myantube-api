@@ -26,7 +26,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
         expiresIn: "7d",
       },
     }),ThrottlerModule.forRoot([{
-      ttl: 60000,
+      ttl: 180000,
       limit: 1,
     }]),
     StreamModule,
