@@ -92,15 +92,15 @@ export class UserService {
           userId: user.id,
         },
       });
-      return await this.emailService.sendEmail(
+     await this.emailService.sendEmail(
         email,
         "Activate Your Account",
         activationCode,
         hostUrl,
       );
     } else {
-      return await this.emailService.sendEmail(
-        email,
+   await this.emailService.sendEmail(
+        user.email,
         "Activate Your Account",
         code.code,
         hostUrl,
