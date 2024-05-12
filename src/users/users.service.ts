@@ -75,6 +75,11 @@ export class UserService {
       },
       include: { user: true },
     });
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email
+      }
+    })
     if (!code) {
       const activationCode = randomUUID();
       const timeLimit = new Date(
@@ -84,7 +89,7 @@ export class UserService {
         data: {
           code: activationCode,
           expiresAt: timeLimit,
-          userId: code.userId,
+          userId: user.id,
         },
       });
       return await this.emailService.sendEmail(
