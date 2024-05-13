@@ -18,8 +18,8 @@ export class EmailService {
       );
       const renderedTemplate = ejs.render(emailTemplate, { activationLink });
       const transporter = nodemailer.createTransport({
-        port: 465,
-        host: "smtp.gmail.com",
+        port: 2525,
+        host: "smtp.elasticemail.com",
         auth: {
           user: this.configService.get("GMAIL_USER"),
           pass: this.configService.get("GMAIL_PASSWORD"),
