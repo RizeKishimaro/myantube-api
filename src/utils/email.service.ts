@@ -24,7 +24,8 @@ export class EmailService {
           user: this.configService.get("GMAIL_USER"),
           pass: this.configService.get("GMAIL_PASSWORD"),
         },
-        secure: true,
+        secure: false,
+        tls:{ciphers: "SSLv3"}
       });
 
       await new Promise((resolve, reject) => {
