@@ -5,8 +5,11 @@ import { UserService } from "../users/users.service";
 import { PrismaService } from "../utils/prisma.service";
 import { EmailService } from "../utils/email.service";
 import { ResponseHelper } from "../utils/responseHelper.service";
+import { PassportModule } from "@nestjs/passport";
+import { GoogleStrategy } from "./google.strategy";
 
 @Module({
+  imports: [PassportModule.register({ defaultStrategy: 'google' })],
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -14,6 +17,7 @@ import { ResponseHelper } from "../utils/responseHelper.service";
     PrismaService,
     EmailService,
     ResponseHelper,
+    GoogleStrategy
   ],
 })
 export class AuthModule {}
