@@ -13,6 +13,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model OauthUser {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  firstName      String?
+  lastName       String?
+  picture        String?
+  provider       String
+  providerId     String
+  accessToken    String?
+  comments       Comment[] // Relation to Comment model
+  videos         Video[] // Relation to Video model
+  ratings        VideoRating[] // Relation to VideoRating model
+  commentRatings CommentRating[] // Inverse relation to CommentRating model
+  subscribers    Subscriber[]    @relation("oauthSubscriber")
+  subscriptions  Subscriber[]    @relation("oauthChannel")
+}
+
 model User {
   id             Int             @id @unique @default(autoincrement())
   name           String          @db.VarChar(255)
@@ -38,39 +55,39 @@ model ActivationCode {
   userId    Int       @unique
 }
 
-enum Provider {
-  google
-  facebook
-  // add other providers as needed
-}
-
 model Comment {
   id            Int             @id @default(autoincrement())
   content       String
-  author        User            @relation(fields: [userId], references: [id])
-  userId        Int
+  author        User?           @relation(fields: [userId], references: [id])
+  oauthAuthor   OauthUser?      @relation(fields: [oauthUserId], references: [id])
+  userId        Int?
+  oauthUserId   String?
   createdAt     DateTime        @default(now())
   CommentRating CommentRating[]
 }
 
 model CommentRating {
-  id        Int     @id @default(autoincrement())
-  likes     Int
-  dislikes  Int
-  comment   Comment @relation(fields: [commentId], references: [id])
-  commentId Int
-  User      User?   @relation(fields: [userId], references: [id])
-  userId    Int?
+  id          Int        @id @default(autoincrement())
+  likes       Int
+  dislikes    Int
+  comment     Comment    @relation(fields: [commentId], references: [id])
+  commentId   Int
+  user        User?      @relation(fields: [userId], references: [id])
+  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
+  userId      Int?
+  oauthUserId String?
 }
 
 model VideoRating {
-  id       Int   @id @default(autoincrement())
-  likes    Int
-  dislikes Int
-  video    Video @relation(fields: [videoId], references: [id])
-  videoId  Int
-  User     User? @relation(fields: [userId], references: [id])
-  userId   Int?
+  id          Int        @id @default(autoincrement())
+  likes       Int
+  dislikes    Int
+  video       Video      @relation(fields: [videoId], references: [id])
+  videoId     Int
+  user        User?      @relation(fields: [userId], references: [id])
+  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
+  userId      Int?
+  oauthUserId String?
 }
 
 model Video {
@@ -78,16 +95,22 @@ model Video {
   title       String
   description String?
   url         String        @unique
-  author      User          @relation(fields: [userId], references: [id])
-  userId      Int
+  author      User?         @relation(fields: [userId], references: [id])
+  oauthAuthor OauthUser?    @relation(fields: [oauthUserId], references: [id])
+  userId      Int?
+  oauthUserId String?
   createdAt   DateTime      @default(now())
   ratings     VideoRating[]
 }
 
 model Subscriber {
-  id           Int  @id @default(autoincrement())
-  subscriberId Int
-  channelId    Int
-  subscriber   User @relation("subscriber", fields: [subscriberId], references: [id])
-  channel      User @relation("channel", fields: [channelId], references: [id])
+  id                Int        @id @default(autoincrement())
+  subscriberId      Int?
+  channelId         Int?
+  oauthSubscriberId String?
+  oauthChannelId    String?
+  subscriber        User?      @relation("subscriber", fields: [subscriberId], references: [id])
+  channel           User?      @relation("channel", fields: [channelId], references: [id])
+  oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
+  oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
