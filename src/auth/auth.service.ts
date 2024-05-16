@@ -20,7 +20,9 @@ export class AuthService {
     );
   }
   createOauthAccount(createAuthDto: CreateAuthDto) { 
-  this.prisma.oauthUser.create(createAuthDto)
+  this.prisma.oauthUser.create({
+      data: createAuthDto 
+    })
     return "This action adds a new auth";
   }
 
