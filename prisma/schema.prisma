@@ -16,11 +16,10 @@ datasource db {
 model OauthUser {
   id             String          @id @default(uuid())
   email          String          @unique
-  firstName      String?
-  lastName       String?
+  name           String?
   picture        String?
-  provider       String
-  providerId     String
+  provider       String?
+  providerId     String?
   accessToken    String?
   comments       Comment[] // Relation to Comment model
   videos         Video[] // Relation to Video model

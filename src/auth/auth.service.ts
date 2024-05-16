@@ -4,28 +4,23 @@ import { UpdateAuthDto } from "./dto/update-auth.dto";
 import { AuthDTO } from "./dto/auth.dto";
 import { UserService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../utils/prisma.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
   async yuriCheck(credentials: AuthDTO) {
-    const isItSenpai = true;
-    if (!isItSenpai) {
-      throw new BadRequestException({
-        code: 119,
-        message: "You're Not Senpai.",
-      });
-    }
     const token = await this.jwtService.signAsync(
       { pass: true, username: "jacky" },
       { secret: "sha256-hmac" },
     );
-    return { statusCode: 200, messaage: "Welcome Senpai", token };
   }
-  create(createAuthDto: CreateAuthDto) {
+  createOauthAccount(createAuthDto: CreateAuthDto) { 
+  this.prisma.oauthUser.create(createAuthDto)
     return "This action adds a new auth";
   }
 
