@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -20,10 +20,12 @@ export class AuthController {
       picture,
       accessToken,
     });
-    return res.json(response).redirect("http://127.0.0.1:3000/auth/thankyou");
+    const redirectUrl = 'http://127.0.0.1:3000/auth/thankyou'; // Your redirect URL
+    const redirectWithParams = `${redirectUrl}?email=${email}&name=${firstName}+${lastName}&picture=${picture}&accessToken=${accessToken}`;
+    res.redirect(redirectWithParams);
   }
   @Get("thankyou")
-  sayThanks(res) {
-    return { res, message: "thankyou" };
+  sayThanks(req:Request) {
+    return { data: req.query, message: "thankyou" };
   }
 }
