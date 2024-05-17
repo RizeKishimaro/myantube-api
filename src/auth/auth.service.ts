@@ -5,6 +5,7 @@ import { AuthDTO } from "./dto/auth.dto";
 import { UserService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../utils/prisma.service";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -12,18 +13,21 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
   ) {}
-  async yuriCheck(credentials: AuthDTO) {
+  async createOauthAccount(createAuthDto: CreateAuthDto) {
+    await this.prisma.oauthUser.create({
+      data: createAuthDto,
+    });
     const token = await this.jwtService.signAsync(
-      { pass: true, username: "jacky" },
-      { secret: "sha256-hmac" },
+      { pass: true, uid: 3 },
+      { secret: this.configService.get("JWT_SECRET") },
     );
-  }
-  createOauthAccount(createAuthDto: CreateAuthDto) { 
-  this.prisma.oauthUser.create({
-      data: createAuthDto 
-    })
-    return "This action adds a new auth";
+    return {
+      statusCode: 201,
+      message: "Successfully Created User",
+      accessToken: token,
+    };
   }
 
   findAll() {

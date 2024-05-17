@@ -1,11 +1,20 @@
 // user/user.controller.ts
-import { Controller, Post, Body, Get, Param, Req, UseGuards, UseFilters } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Req,
+  UseGuards,
+  UseFilters,
+} from "@nestjs/common";
 import { ActivationDto } from "./dto/activation.dto";
 import { CreateUserDto } from "./dto/createuser.dto";
 import { UserService } from "./users.service";
 import { ThrottlerGuard } from "@nestjs/throttler";
 import { ThrottlerCustomExceptionFilter } from "../exceptions/throttler.filter";
-import {Request} from "express"
+import { Request } from "express";
 
 @UseFilters(new ThrottlerCustomExceptionFilter())
 @Controller("users")
@@ -27,8 +36,8 @@ export class UserController {
 
   @UseGuards(ThrottlerGuard)
   @Post("regenerate-code")
-  async generateActivationCode(@Req() req: Request, email: string){
+  async generateActivationCode(@Req() req: Request, email: string) {
     const hosturl = req.protocol + "://" + req.get("host");
-    return await this.userService.resendActivationCode(email,hosturl)
+    return await this.userService.resendActivationCode(email, hosturl);
   }
 }

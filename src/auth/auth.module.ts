@@ -9,7 +9,7 @@ import { PassportModule } from "@nestjs/passport";
 import { GoogleStrategy } from "./google.strategy";
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'google' })],
+  imports: [PassportModule.register({ defaultStrategy: "google" })],
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -17,7 +17,7 @@ import { GoogleStrategy } from "./google.strategy";
     PrismaService,
     EmailService,
     ResponseHelper,
-    GoogleStrategy
+    GoogleStrategy,
   ],
 })
 export class AuthModule {}
