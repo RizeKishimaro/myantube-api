@@ -25,7 +25,7 @@ export class AuthController {
     res.redirect(redirectWithParams);
   }
   @Get("thankyou")
-  sayThanks(req:Request) {
+  sayThanks(@Req() req:Request) {
     console.log(req)
     return { data: req?.params, message: "thankyou" };
   }
