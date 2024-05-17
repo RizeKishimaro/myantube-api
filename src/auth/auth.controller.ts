@@ -26,6 +26,7 @@ export class AuthController {
   }
   @Get("thankyou")
   sayThanks(req:Request) {
-    return { data: req.query, message: "thankyou" };
+    console.log(req)
+    return { data: req?.params, message: "thankyou" };
   }
 }
