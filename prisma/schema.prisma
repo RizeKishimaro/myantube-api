@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,17 +14,17 @@ model OauthUser {
   picture        String?
   provider       String?
   providerId     String?
-  accessToken    String?
-  comments       Comment[] // Relation to Comment model
-  videos         Video[] // Relation to Video model
-  ratings        VideoRating[] // Relation to VideoRating model
-  commentRatings CommentRating[] // Inverse relation to CommentRating model
+  accessToken    String?         @db.VarChar(500)
+  comments       Comment[]
+  videos         Video[]
+  ratings        VideoRating[]
+  commentRatings CommentRating[]
   subscribers    Subscriber[]    @relation("oauthSubscriber")
   subscriptions  Subscriber[]    @relation("oauthChannel")
 }
 
 model User {
-  id             Int             @id @unique @default(autoincrement())
+  id             String          @id @default(uuid())
   name           String          @db.VarChar(255)
   password       String
   email          String          @unique @db.VarChar(255)
@@ -51,7 +45,7 @@ model ActivationCode {
   code      String    @unique
   expiresAt DateTime?
   user      User      @relation(fields: [userId], references: [id])
-  userId    Int       @unique
+  userId    String    @unique
 }
 
 model Comment {
@@ -59,7 +53,7 @@ model Comment {
   content       String
   author        User?           @relation(fields: [userId], references: [id])
   oauthAuthor   OauthUser?      @relation(fields: [oauthUserId], references: [id])
-  userId        Int?
+  userId        String?
   oauthUserId   String?
   createdAt     DateTime        @default(now())
   CommentRating CommentRating[]
@@ -73,7 +67,7 @@ model CommentRating {
   commentId   Int
   user        User?      @relation(fields: [userId], references: [id])
   oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
-  userId      Int?
+  userId      String?
   oauthUserId String?
 }
 
@@ -85,7 +79,7 @@ model VideoRating {
   videoId     Int
   user        User?      @relation(fields: [userId], references: [id])
   oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
-  userId      Int?
+  userId      String?
   oauthUserId String?
 }
 
@@ -96,16 +90,16 @@ model Video {
   url         String        @unique
   author      User?         @relation(fields: [userId], references: [id])
   oauthAuthor OauthUser?    @relation(fields: [oauthUserId], references: [id])
-  userId      Int?
+  userId      String?
   oauthUserId String?
   createdAt   DateTime      @default(now())
   ratings     VideoRating[]
 }
 
 model Subscriber {
-  id                Int        @id @default(autoincrement())
-  subscriberId      Int?
-  channelId         Int?
+  id                String     @id @default(uuid())
+  subscriberId      String?
+  channelId         String?
   oauthSubscriberId String?
   oauthChannelId    String?
   subscriber        User?      @relation("subscriber", fields: [subscriberId], references: [id])
@@ -113,3 +107,4 @@ model Subscriber {
   oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
+
