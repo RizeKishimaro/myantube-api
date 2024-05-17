@@ -21,6 +21,9 @@ export class UserService {
     const user = await this.prisma.user.findFirst({
       where:{email: verifyUserInfo.email}
       });
+    if(!user){
+      throw new BadRequestException("Username or email invalid")
+    }
     const isValid= await bcrypt.compare(verifyUserInfo.password,user.password)
     if(!isValid){
       throw new BadRequestException("Username Or Password Incorrect!");
@@ -60,11 +63,6 @@ export class UserService {
       include: { user: true },
     });
 
-    console.log(
-      activationCode.expiresAt < new Date(),
-      activationCode.expiresAt,
-      new Date(),
-    );
     if (!activationCode || activationCode.expiresAt < new Date()) {
       throw new BadRequestException("Invalid or expired activation code.");
     }
