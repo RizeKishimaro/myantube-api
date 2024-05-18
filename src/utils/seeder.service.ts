@@ -34,12 +34,13 @@ async function main() {
   const video2 = await prisma.video.create({
     data: {
       title: 'Amanaguchi Miku',
-      description: "Forever Hatsunemiku",
+      description: 'Forever Hatsunemiku',
       url: 'http://127.0.0.1:3000/videos/mikumiku.mp4',
       author: { connect: { id: user2.id } },
     },
   });
 
+  // Create comments for the videos
   const comment1 = await prisma.comment.create({
     data: {
       content: 'I like this song',
@@ -58,7 +59,7 @@ async function main() {
 
   const comment3 = await prisma.comment.create({
     data: {
-      content: 'QiQi is Good at sing',
+      content: 'QiQi is Good at singing',
       author: { connect: { id: user1.id } },
       video: { connect: { id: video2.id } },
     },
@@ -72,6 +73,7 @@ async function main() {
     },
   });
 
+  // Create comment ratings
   await prisma.commentRating.createMany({
     data: [
       {
@@ -100,8 +102,50 @@ async function main() {
       },
     ],
   });
-}
 
+  // Create video likes
+  await prisma.like.createMany({
+    data: [
+      {
+        userId: user1.id,
+        videoId: video1.id,
+      },
+      {
+        userId: user2.id,
+        videoId: video1.id,
+      },
+      {
+        userId: user1.id,
+        videoId: video2.id,
+      },
+      {
+        userId: user2.id,
+        videoId: video2.id,
+      },
+    ],
+  });
+
+  await prisma.view.createMany({
+    data: [
+      {
+        userId: user1.id,
+        videoId: video1.id,
+      },
+      {
+        userId: user2.id,
+        videoId: video1.id,
+      },
+      {
+        userId: user1.id,
+        videoId: video2.id,
+      },
+      {
+        userId: user2.id,
+        videoId: video2.id,
+      },
+    ],
+  });
+}
 
 main()
   .catch(e => {
