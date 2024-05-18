@@ -10,9 +10,24 @@ export class VideoService {
     return "goffy ahhhh";
   }
 
-  findAll() {
-    const videos = this.prismaService.video.findMany();
-    return videos;
+  async findAll() {
+    const video = await prisma.video.findMany({
+    include: {
+      author: true, 
+      oauthAuthor: true, 
+      comments: {
+        include: {
+          author: true, 
+          oauthAuthor: true, 
+          CommentRating: true, 
+        },
+      },
+      likes: true, 
+      dislikes: true, 
+      views: true,
+    },
+  });
+    return video;
   }
 
   findOne(id: number) {
