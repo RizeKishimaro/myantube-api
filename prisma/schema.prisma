@@ -140,4 +140,3 @@ model View {
   video   Video  @relation(fields: [videoId], references: [id])
   videoId Int
 }
-
