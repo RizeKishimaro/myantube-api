@@ -102,7 +102,7 @@ model Video {
   likes       Like[]
   dislikes    Dislike[]
   views       View[]
-  Comment     Comment[]
+  comment     Comment[]
 }
 
 model Subscriber {

@@ -11,17 +11,10 @@ export class VideoService {
   }
 
   async findAll() {
-    const video = await prisma.video.findMany({
+    const video = await this.prismaService.video.findMany({
     include: {
       author: true, 
       oauthAuthor: true, 
-      comments: {
-        include: {
-          author: true, 
-          oauthAuthor: true, 
-          CommentRating: true, 
-        },
-      },
       likes: true, 
       dislikes: true, 
       views: true,
