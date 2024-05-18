@@ -1,14 +1,18 @@
-import { BadRequestException, Controller, Get, Req, Res } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Query, Req, Res } from "@nestjs/common";
 import { StreamService } from "./stream.service";
 import { join } from "path";
 import { createReadStream, statSync } from "fs";
+import { PrismaService } from "../utils/prisma.service";
 
 @Controller("stream")
 export class StreamController {
-  constructor(private readonly streamService: StreamService) {}
+  constructor(
+    private readonly streamService: StreamService,
+    private readonly prisma: PrismaService,
+  ) {}
+
   @Get()
-  startStream(@Req() request: any, @Res() response: any) {
-    console.log(request.headers.range);
+  async startStream(@Req() request: any, @Res() response: any, @Query("video") id: number) {
     const range = request.headers.range ?? "5";
     if (!range) {
       throw new BadRequestException({
@@ -16,9 +20,16 @@ export class StreamController {
         message: "Bad range header or does not exist.",
       });
     }
-    const video = join(process.cwd(), "public", "videos", "video.mp4");
+    const query = await this.prisma.video.findFirst({
+      where: {
+        id
+      },
+      select:{
+      url: true
+      }
+    })
+    const video = query.url 
     const total_length = statSync(video).size;
-    console.log(total_length);
     const CHUNK_SIZE = 10 ** 6;
     const start = Number(range.replace(/\D/g, ""));
     const end = Math.min(start + CHUNK_SIZE, total_length - 1);

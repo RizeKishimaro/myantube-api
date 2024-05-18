@@ -1,3 +1,5 @@
+import { join } from "path";
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -26,7 +28,7 @@ async function main() {
     data: {
       title: 'QiQi- I\'m willing to be normal',
       description: 'Support Me On twitter.',
-      url: 'http://127.0.0.1:3000/videos/willing-to-be-normal.mp4',
+      url: join(process.cwd(),"public","videos","willing-to-be-normal.mp4"),
       author: { connect: { id: user1.id } },
     },
   });
@@ -35,7 +37,7 @@ async function main() {
     data: {
       title: 'Amanaguchi Miku',
       description: 'Forever Hatsunemiku',
-      url: 'http://127.0.0.1:3000/videos/mikumiku.mp4',
+      url: join(process.cwd(),"public","videos","mikumiku.mp4"),
       author: { connect: { id: user2.id } },
     },
   });

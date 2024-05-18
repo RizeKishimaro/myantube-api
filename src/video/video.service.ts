@@ -14,7 +14,14 @@ export class VideoService {
     const video = await this.prismaService.video.findMany({
     include: {
       author: true, 
-      oauthAuthor: true, 
+      oauthAuthor: true,
+        comment: {
+        include: {
+          author: true, // Includes the user who made the comment
+          oauthAuthor: true, // Includes the OAuth user who made the comment
+          CommentRating: true, // Includes the ratings for the comment
+        },
+      },
       likes: true, 
       dislikes: true, 
       views: true,
