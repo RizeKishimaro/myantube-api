@@ -22,7 +22,7 @@ export class StreamController {
     }
     const query = await this.prisma.video.findFirst({
       where: {
-        id
+        id: +id
       },
       select:{
       url: true
