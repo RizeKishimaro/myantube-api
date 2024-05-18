@@ -33,39 +33,75 @@ async function main() {
 
   const video2 = await prisma.video.create({
     data: {
-      title: 'Second Video',
-      description: 'This is the second video.',
-      url: 'http://example.com/second-video',
+      title: 'Amanaguchi Miku',
+      description: "Forever Hatsunemiku",
+      url: 'http://127.0.0.1:3000/videos/mikumiku.mp4',
       author: { connect: { id: user2.id } },
     },
   });
 
-  // Create some comments for the videos
-  await prisma.comment.createMany({
+  const comment1 = await prisma.comment.create({
+    data: {
+      content: 'I like this song',
+      author: { connect: { id: user1.id } },
+      video: { connect: { id: video1.id } },
+    },
+  });
+
+  const comment2 = await prisma.comment.create({
+    data: {
+      content: 'Miku Forever!!!!',
+      author: { connect: { id: user2.id } },
+      video: { connect: { id: video1.id } },
+    },
+  });
+
+  const comment3 = await prisma.comment.create({
+    data: {
+      content: 'QiQi is Good at sing',
+      author: { connect: { id: user1.id } },
+      video: { connect: { id: video2.id } },
+    },
+  });
+
+  const comment4 = await prisma.comment.create({
+    data: {
+      content: 'What about kikuo',
+      author: { connect: { id: user2.id } },
+      video: { connect: { id: video2.id } },
+    },
+  });
+
+  await prisma.commentRating.createMany({
     data: [
       {
-        content: 'Great video!',
-        userId: user1.id,
-        videoId: video1.id,
-      },
-      {
-        content: 'Nice explanation!',
+        likes: 5,
+        dislikes: 1,
+        commentId: comment1.id,
         userId: user2.id,
-        videoId: video1.id,
       },
       {
-        content: 'I learned a lot.',
+        likes: 3,
+        dislikes: 0,
+        commentId: comment2.id,
         userId: user1.id,
-        videoId: video2.id,
       },
       {
-        content: 'Very informative.',
+        likes: 8,
+        dislikes: 2,
+        commentId: comment3.id,
         userId: user2.id,
-        videoId: video2.id,
+      },
+      {
+        likes: 6,
+        dislikes: 1,
+        commentId: comment4.id,
+        userId: user1.id,
       },
     ],
   });
 }
+
 
 main()
   .catch(e => {
