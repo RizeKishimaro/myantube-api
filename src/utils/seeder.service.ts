@@ -1,4 +1,4 @@
-import { join } from "path";
+const {join} = require("path")
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
