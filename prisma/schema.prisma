@@ -21,6 +21,8 @@ model OauthUser {
   commentRatings CommentRating[]
   subscribers    Subscriber[]    @relation("oauthSubscriber")
   subscriptions  Subscriber[]    @relation("oauthChannel")
+  VideoLike      VideoLike[]
+  VideoDislike   VideoDislike[]
 }
 
 model User {
@@ -38,9 +40,8 @@ model User {
   subscribers    Subscriber[]    @relation("subscriber")
   subscriptions  Subscriber[]    @relation("channel")
   activationCode ActivationCode?
-  Like           Like[]
-  Dislike        Dislike[]
-  View           View[]
+  VideoLike      VideoLike[]
+  VideoDislike   VideoDislike[]
 }
 
 model ActivationCode {
@@ -78,31 +79,48 @@ model CommentRating {
 
 model VideoRating {
   id          Int        @id @default(autoincrement())
-  likes       Int
-  dislikes    Int
   video       Video      @relation(fields: [videoId], references: [id])
   videoId     Int
-  user        User?      @relation(fields: [userId], references: [id])
-  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
   userId      String?
+  oauthUserId String?
+  OauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
+  User        User?      @relation(fields: [userId], references: [id])
+}
+
+model VideoLike {
+  id          Int        @id @default(autoincrement())
+  video       Video      @relation(fields: [videoId], references: [id])
+  videoId     Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
+  oauthUserId String?
+}
+
+model VideoDislike {
+  id          Int        @id @default(autoincrement())
+  video       Video      @relation(fields: [videoId], references: [id])
+  videoId     Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
   oauthUserId String?
 }
 
 model Video {
-  id          Int           @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   title       String
   description String?
-  url         String        @unique
-  author      User?         @relation(fields: [userId], references: [id])
-  oauthAuthor OauthUser?    @relation(fields: [oauthUserId], references: [id])
+  url         String         @unique
+  author      User?          @relation(fields: [userId], references: [id])
+  oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id])
   userId      String?
   oauthUserId String?
-  createdAt   DateTime      @default(now())
+  createdAt   DateTime       @default(now())
   ratings     VideoRating[]
-  likes       Like[]
-  dislikes    Dislike[]
-  views       View[]
-  comment     Comment[]
+  comments    Comment[]
+  likes       VideoLike[]
+  dislikes    VideoDislike[]
 }
 
 model Subscriber {
@@ -117,26 +135,3 @@ model Subscriber {
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
 
-model Like {
-  id      Int    @id @default(autoincrement())
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
-  video   Video  @relation(fields: [videoId], references: [id])
-  videoId Int
-}
-
-model Dislike {
-  id      Int    @id @default(autoincrement())
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
-  video   Video  @relation(fields: [videoId], references: [id])
-  videoId Int
-}
-
-model View {
-  id      Int    @id @default(autoincrement())
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
-  video   Video  @relation(fields: [videoId], references: [id])
-  videoId Int
-}

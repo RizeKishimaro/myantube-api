@@ -30,8 +30,50 @@ export class VideoService {
     return video;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} video`;
+  async findOne(id: number) {
+    const videoData = await this.prismaService.video.findFirst({
+      where:{ id},
+      include:{
+        author: {
+          select: {
+            name: true,
+            id: true,
+            picture:true,
+          }
+        },
+        oauthAuthor: {
+          select:{
+            name: true,
+            id: true,
+            picture: true,
+          }
+        },
+        comment:{
+          include:{
+            author: {
+              select: {
+                name: true,
+                id:true
+              }
+            },
+            oauthAuthor:{
+              select:{
+                name: true,
+                id: true,
+                comments: true
+              }
+            },
+            CommentRating: true,
+          }
+        }
+      }
+    })
+    const responseData = {
+      uploader:{
+        name: videoData.author,
+
+      }
+    }
   }
 
   update(id: number, updateVideoDto: UpdateVideoDto) {
