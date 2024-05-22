@@ -50,10 +50,6 @@ export class VideoService {
             picture: true,
           }
         },
-        ratings: {
-        select: {
-        }
-        },
         comments:{
           include:{
             author: {
