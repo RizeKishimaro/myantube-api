@@ -42,8 +42,8 @@ export class UserController {
     return await this.userService.resendActivationCode(email, hosturl);
   }
   @Post("login")
-  async verifyUser(@Req() req: Request,@Body() body:UserAuthDTO){
+  async verifyUser(@Req() req: Request, @Body() body: UserAuthDTO) {
     const ip = req.ip;
-    return this.userService.verifyUser(body,ip)
+    return this.userService.verifyUser(body, ip);
   }
 }

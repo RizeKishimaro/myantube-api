@@ -16,7 +16,7 @@ import { ResponseHelper } from "../utils/responseHelper.service";
 export class VideoController {
   constructor(
     private readonly videoService: VideoService,
-    private readonly responseHelper: ResponseHelper
+    private readonly responseHelper: ResponseHelper,
   ) {}
 
   @Post()
@@ -31,9 +31,13 @@ export class VideoController {
 
   @Get(":id")
   async findOne(@Param("id") id: string) {
-    const data = await  this.videoService.findOne(+id);
-    console.log(data)
-    return this.responseHelper.sendSuccessMessage("Successfully Searched",200, data)
+    const data = await this.videoService.findOne(+id);
+    console.log(data);
+    return this.responseHelper.sendSuccessMessage(
+      "Successfully Searched",
+      200,
+      data,
+    );
   }
 
   @Patch(":id")

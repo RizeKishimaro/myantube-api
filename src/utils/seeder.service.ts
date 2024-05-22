@@ -1,24 +1,24 @@
-const {join} = require("path")
+const { join } = require("path");
 
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
   // Create some users
   const user1 = await prisma.user.create({
     data: {
-      name: 'Alice',
-      password: 'alicepassword',
-      email: 'alice@example.com',
+      name: "Alice",
+      password: "alicepassword",
+      email: "alice@example.com",
       isActive: true,
     },
   });
 
   const user2 = await prisma.user.create({
     data: {
-      name: 'Bob',
-      password: 'bobpassword',
-      email: 'bob@example.com',
+      name: "Bob",
+      password: "bobpassword",
+      email: "bob@example.com",
       isActive: true,
     },
   });
@@ -26,18 +26,18 @@ async function main() {
   // Create some videos
   const video1 = await prisma.video.create({
     data: {
-      title: 'QiQi- I\'m willing to be normal',
-      description: 'Support Me On twitter.',
-      url: join(process.cwd(),"public","videos","willing-to-be-normal.mp4"),
+      title: "QiQi- I'm willing to be normal",
+      description: "Support Me On twitter.",
+      url: join(process.cwd(), "public", "videos", "willing-to-be-normal.mp4"),
       author: { connect: { id: user1.id } },
     },
   });
 
   const video2 = await prisma.video.create({
     data: {
-      title: 'Amanaguchi Miku',
-      description: 'Forever Hatsunemiku',
-      url: join(process.cwd(),"public","videos","mikumiku.mp4"),
+      title: "Amanaguchi Miku",
+      description: "Forever Hatsunemiku",
+      url: join(process.cwd(), "public", "videos", "mikumiku.mp4"),
       author: { connect: { id: user2.id } },
     },
   });
@@ -45,7 +45,7 @@ async function main() {
   // Create comments for the videos
   const comment1 = await prisma.comment.create({
     data: {
-      content: 'I like this song',
+      content: "I like this song",
       author: { connect: { id: user1.id } },
       video: { connect: { id: video1.id } },
     },
@@ -53,7 +53,7 @@ async function main() {
 
   const comment2 = await prisma.comment.create({
     data: {
-      content: 'Miku Forever!!!!',
+      content: "Miku Forever!!!!",
       author: { connect: { id: user2.id } },
       video: { connect: { id: video1.id } },
     },
@@ -61,7 +61,7 @@ async function main() {
 
   const comment3 = await prisma.comment.create({
     data: {
-      content: 'QiQi is Good at singing',
+      content: "QiQi is Good at singing",
       author: { connect: { id: user1.id } },
       video: { connect: { id: video2.id } },
     },
@@ -69,7 +69,7 @@ async function main() {
 
   const comment4 = await prisma.comment.create({
     data: {
-      content: 'What about kikuo',
+      content: "What about kikuo",
       author: { connect: { id: user2.id } },
       video: { connect: { id: video2.id } },
     },
@@ -150,7 +150,7 @@ async function main() {
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })

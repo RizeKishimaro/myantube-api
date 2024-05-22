@@ -1,7 +1,7 @@
 import { HttpException } from "@nestjs/common";
 
 export class ResponseHelper {
-  sendSuccessMessage(message = "Success", statusCode = 200, data?:any) {
+  sendSuccessMessage(message = "Success", statusCode = 200, data?: any) {
     return {
       statusCode,
       message,

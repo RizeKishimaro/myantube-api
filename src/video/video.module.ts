@@ -6,6 +6,6 @@ import { ResponseHelper } from "../utils/responseHelper.service";
 
 @Module({
   controllers: [VideoController],
-  providers: [VideoService, PrismaService,ResponseHelper],
+  providers: [VideoService, PrismaService, ResponseHelper],
 })
 export class VideoModule {}

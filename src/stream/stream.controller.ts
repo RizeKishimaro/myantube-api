@@ -1,4 +1,11 @@
-import { BadRequestException, Controller, Get, Query, Req, Res } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  Req,
+  Res,
+} from "@nestjs/common";
 import { StreamService } from "./stream.service";
 import { join } from "path";
 import { createReadStream, statSync } from "fs";
@@ -12,7 +19,11 @@ export class StreamController {
   ) {}
 
   @Get()
-  async startStream(@Req() request: any, @Res() response: any, @Query("video") id: number) {
+  async startStream(
+    @Req() request: any,
+    @Res() response: any,
+    @Query("video") id: number,
+  ) {
     const range = request.headers.range ?? "5";
     if (!range) {
       throw new BadRequestException({
@@ -22,13 +33,13 @@ export class StreamController {
     }
     const query = await this.prisma.video.findFirst({
       where: {
-        id: +id
+        id: +id,
       },
-      select:{
-      url: true
-      }
-    })
-    const video = query.url 
+      select: {
+        url: true,
+      },
+    });
+    const video = query.url;
     const total_length = statSync(video).size;
     const CHUNK_SIZE = 10 ** 6;
     const start = Number(range.replace(/\D/g, ""));

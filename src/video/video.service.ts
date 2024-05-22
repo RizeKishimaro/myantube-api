@@ -5,101 +5,139 @@ import { PrismaService } from "../utils/prisma.service";
 
 @Injectable()
 export class VideoService {
-  constructor(
-    private readonly prismaService: PrismaService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
   create(createVideoDto: CreateVideoDto) {
     return "goffy ahhhh";
   }
 
   async findAll() {
-    const video = await this.prismaService.video.findMany({
-    include: {
-      author: true, 
-      oauthAuthor: true,
-        comments: {
+      const data = await this.prismaService.video.findMany({
         include: {
-          author: true, // Includes the user who made the comment
-          oauthAuthor: true, // Includes the OAuth user who made the comment
-          CommentRating: true, // Includes the ratings for the comment
+          _count:{
+            select:{
+              likes:true,
+              dislikes: true,
+              views: true
+            }
+          },
+          author: {
+            select: {
+              id: true,
+              name: true,
+              picture: true,
+            },
+          },
+          oauthAuthor: {
+            select: {
+              id: true,
+              name: true,
+              picture: true,
+            },
+          },
         },
-      },
-      likes: true, 
-      dislikes: true, 
-      
-    },
-  });
-    return video;
+      })
+    const videoData = data.map(({author,oauthAuthor,_count,url,id,description})=>{
+      return {
+        author: {
+          id:author?.id || oauthAuthor?.id,
+          name: author?.name || oauthAuthor?.name,
+          picture: author?.picture || oauthAuthor?.picture
+        },
+        video:{
+          id,
+          url,
+          description,
+          status:{
+            likes: _count.likes,
+            dislikes: _count.dislikes,
+            views: _count.views
+          }
+
+        }
+      }
+    })
+    return videoData;
   }
 
   async findOne(videoId: number) {
-    const { author, oauthAuthor, id,url,description,title, uploadedAt,comments } = await this.prismaService.video.findFirst({
-      where:{ id: videoId},
-      include:{
+    const {
+      author,
+      oauthAuthor,
+      id,
+      url,
+      description,
+      title,
+      uploadedAt,
+      comments,
+    } = await this.prismaService.video.findFirst({
+      where: { id: videoId },
+      include: {
         author: {
           select: {
             name: true,
             id: true,
-            picture:true,
-          }
+            picture: true,
+          },
         },
         oauthAuthor: {
-          select:{
+          select: {
             name: true,
             id: true,
             picture: true,
-          }
+          },
         },
-        comments:{
-          include:{
+        comments: {
+          include: {
             author: {
               select: {
                 name: true,
-                id:true,
+                id: true,
                 comments: true,
                 createdAt: true,
-                
-              }
+              },
             },
-            oauthAuthor:{
-              select:{
+            oauthAuthor: {
+              select: {
                 name: true,
                 id: true,
-                comments: true
-              }
+                comments: true,
+              },
             },
-          }
-        }
-      }
-    })
-    const responseData = {
-      uploader:{
-        name: oauthAuthor?.name|| author?.name ,
-        picture: oauthAuthor?.picture || author?.picture,
-        id: oauthAuthor?.id || author?.id
+          },
+        },
       },
-      video:{
+    });
+    const responseData = {
+      uploader: {
+        name: oauthAuthor?.name || author?.name,
+        picture: oauthAuthor?.picture || author?.picture,
+        id: oauthAuthor?.id || author?.id,
+      },
+      video: {
         id,
         url,
         description,
         title,
-        comment: 
-          comments.map((el)=>{
-            return {
-              id: el.id,
-              by: el?.userId || el?.oauthUserId,
-              text: el.content,
-              at: el.createdAt,
-            }
-          })
-        
-      }
-    }
+        comment: comments.map((el) => {
+          return {
+            id: el.id,
+            by: el?.userId || el?.oauthUserId,
+            text: el.content,
+            at: el.createdAt,
+          };
+        }),
+      },
+    };
     return responseData;
   }
 
-  update(id: number, updateVideoDto: UpdateVideoDto) {
-    return `This action updates a #${id} video`;
+  async update(id: number, updateVideoDto: UpdateVideoDto) {
+    await this.prismaService.videoLike.create({
+      data: {
+        videoId: updateVideoDto.videoId,
+        userId: updateVideoDto.userId,
+      },
+    });
   }
 
   remove(id: number) {

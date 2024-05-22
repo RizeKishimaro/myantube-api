@@ -5,6 +5,6 @@ import { PrismaService } from "../utils/prisma.service";
 
 @Module({
   controllers: [StreamController],
-  providers: [StreamService,PrismaService],
+  providers: [StreamService, PrismaService],
 })
 export class StreamModule {}
