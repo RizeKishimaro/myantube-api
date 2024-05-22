@@ -35,7 +35,7 @@ async function main() {
       title: "Prince Of Darkness",
       description: "Phonk video is wild :D",
       poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
-      url: join(process.cwd(), "public", "videos", "prince-of-darkness.mp4"),
+      url: join(process.cwd(), "public", "videos", "prince_of_darkness.mp4"),
       userId: user1.id,
     },
     {
