@@ -83,7 +83,7 @@ export class VideoService {
         url,
         description,
         title,
-        comment: [
+        comment: 
           comments.map((el)=>{
             return {
               id: el.id,
@@ -92,7 +92,7 @@ export class VideoService {
               at: el.createdAt,
             }
           })
-        ]
+        
       }
     }
     return responseData;
