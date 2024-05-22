@@ -74,9 +74,9 @@ export class VideoService {
     })
     const responseData = {
       uploader:{
-        name: oauthAuthor.name|| author.name ,
-        picture: oauthAuthor.picture || author.picture,
-        id: oauthAuthor.id || author.id
+        name: oauthAuthor?.name|| author?.name ,
+        picture: oauthAuthor?.picture || author?.picture,
+        id: oauthAuthor?.id || author?.id
       },
       video:{
         id,
@@ -87,7 +87,7 @@ export class VideoService {
           comments.map((el)=>{
             return {
               id: el.id,
-              by: el.userId || el.oauthUserId,
+              by: el?.userId || el?.oauthUserId,
               text: el.content,
               at: el.createdAt,
             }
