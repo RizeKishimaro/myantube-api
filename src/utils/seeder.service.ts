@@ -67,7 +67,7 @@ async function main() {
     },
   });
 
-  const comment4 = await prisma.comments.create({
+  const comment4 = await prisma.comment.create({
     data: {
       content: 'What about kikuo',
       author: { connect: { id: user2.id } },
