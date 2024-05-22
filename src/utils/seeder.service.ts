@@ -43,7 +43,7 @@ async function main() {
   });
 
   // Create comments for the videos
-  const comment1 = await prisma.comments.create({
+  const comment1 = await prisma.comment.create({
     data: {
       content: 'I like this song',
       author: { connect: { id: user1.id } },
@@ -51,7 +51,7 @@ async function main() {
     },
   });
 
-  const comment2 = await prisma.comments.create({
+  const comment2 = await prisma.comment.create({
     data: {
       content: 'Miku Forever!!!!',
       author: { connect: { id: user2.id } },
@@ -59,7 +59,7 @@ async function main() {
     },
   });
 
-  const comment3 = await prisma.comments.create({
+  const comment3 = await prisma.comment.create({
     data: {
       content: 'QiQi is Good at singing',
       author: { connect: { id: user1.id } },
@@ -106,7 +106,7 @@ async function main() {
   });
 
   // Create video likes
-  await prisma.likes.createMany({
+  await prisma.videoLikes.createMany({
     data: [
       {
         userId: user1.id,
