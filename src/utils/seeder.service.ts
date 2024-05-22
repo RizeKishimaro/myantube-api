@@ -67,15 +67,15 @@ async function main() {
 
   // Create comments for the videos
   const comments = [
-    { content: "I like this song", authorId: user1.id, videoId: videoRecords[0].id },
-    { content: "Miku Forever!!!!", authorId: user2.id, videoId: videoRecords[0].id },
-    { content: "QiQi is Good at singing", authorId: user1.id, videoId: videoRecords[1].id },
-    { content: "What about kikuo", authorId: user2.id, videoId: videoRecords[1].id },
-    { content: "This video is amazing!", authorId: user1.id, videoId: videoRecords[2].id },
-    { content: "I love this!", authorId: user2.id, videoId: videoRecords[2].id },
-    { content: "Luka Luka Night Fever is the best!", authorId: user1.id, videoId: videoRecords[3].id },
-    { content: "Triple Baka is so funny!", authorId: user2.id, videoId: videoRecords[4].id },
-    { content: "Eternal Youth forever!", authorId: user1.id, videoId: videoRecords[5].id },
+    { content: "I like this song",userId: user1.id, videoId: videoRecords[0].id },
+    { content: "Miku Forever!!!!", userId: user2.id, videoId: videoRecords[0].id },
+    { content: "QiQi is Good at singing", userId: user1.id, videoId: videoRecords[1].id },
+    { content: "What about kikuo", userId: user2.id, videoId: videoRecords[1].id },
+    { content: "This video is amazing!", userId: user1.id, videoId: videoRecords[2].id },
+    { content: "I love this!", userId: user2.id, videoId: videoRecords[2].id },
+    { content: "Luka Luka Night Fever is the best!", userId: user1.id, videoId: videoRecords[3].id },
+    { content: "Triple Baka is so funny!", userId: user2.id, videoId: videoRecords[4].id },
+    { content: "Eternal Youth forever!", userId: user1.id, videoId: videoRecords[5].id },
   ];
 
   await prisma.comment.createMany({ data: comments });
