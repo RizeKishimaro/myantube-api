@@ -124,17 +124,18 @@ model Video {
   id          Int            @id @default(autoincrement())
   title       String
   description String?
+  poster      String?
   url         String         @unique
   author      User           @relation(fields: [userId], references: [id])
   oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id])
   userId      String
   oauthUserId String?
-  ratings     VideoRating[]
   comments    Comment[]
   likes       VideoLike[]
   dislikes    VideoDislike[]
   views       Views[]
   uploadedAt  DateTime       @default(now())
+  VideoRating VideoRating[]
 }
 
 model Subscriber {
