@@ -106,7 +106,7 @@ async function main() {
   });
 
   // Create video likes
-  await prisma.videoLikes.createMany({
+  await prisma.videoLike.createMany({
     data: [
       {
         userId: user1.id,
