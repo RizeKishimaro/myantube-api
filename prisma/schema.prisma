@@ -23,6 +23,7 @@ model OauthUser {
   subscriptions  Subscriber[]    @relation("oauthChannel")
   VideoLike      VideoLike[]
   VideoDislike   VideoDislike[]
+  Views          Views[]
 }
 
 model User {
@@ -42,6 +43,8 @@ model User {
   activationCode ActivationCode?
   VideoLike      VideoLike[]
   VideoDislike   VideoDislike[]
+  joinedAt       DateTime        @default(now())
+  Views          Views[]
 }
 
 model ActivationCode {
@@ -107,20 +110,31 @@ model VideoDislike {
   oauthUserId String?
 }
 
+model Views {
+  id          Int        @id @default(autoincrement())
+  video       Video      @relation(fields: [videoId], references: [id])
+  videoId     Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  oauthUser   OauthUser? @relation(fields: [oauthUserId], references: [id])
+  oauthUserId String?
+}
+
 model Video {
   id          Int            @id @default(autoincrement())
   title       String
   description String?
   url         String         @unique
-  author      User?          @relation(fields: [userId], references: [id])
+  author      User           @relation(fields: [userId], references: [id])
   oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id])
-  userId      String?
+  userId      String
   oauthUserId String?
-  createdAt   DateTime       @default(now())
   ratings     VideoRating[]
   comments    Comment[]
   likes       VideoLike[]
   dislikes    VideoDislike[]
+  views       Views[]
+  uploadedAt  DateTime       @default(now())
 }
 
 model Subscriber {
@@ -134,4 +148,3 @@ model Subscriber {
   oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
-

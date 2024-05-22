@@ -5,7 +5,9 @@ import { PrismaService } from "../utils/prisma.service";
 
 @Injectable()
 export class VideoService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+  ) {}
   create(createVideoDto: CreateVideoDto) {
     return "goffy ahhhh";
   }
@@ -15,7 +17,7 @@ export class VideoService {
     include: {
       author: true, 
       oauthAuthor: true,
-        comment: {
+        comments: {
         include: {
           author: true, // Includes the user who made the comment
           oauthAuthor: true, // Includes the OAuth user who made the comment
@@ -24,15 +26,15 @@ export class VideoService {
       },
       likes: true, 
       dislikes: true, 
-      views: true,
+      
     },
   });
     return video;
   }
 
-  async findOne(id: number) {
-    const videoData = await this.prismaService.video.findFirst({
-      where:{ id},
+  async findOne(videoId: number) {
+    const { author, oauthAuthor, id,url,description,title, uploadedAt,comments } = await this.prismaService.video.findFirst({
+      where:{ id: videoId},
       include:{
         author: {
           select: {
@@ -48,12 +50,19 @@ export class VideoService {
             picture: true,
           }
         },
-        comment:{
+        ratings: {
+        select: {
+        }
+        },
+        comments:{
           include:{
             author: {
               select: {
                 name: true,
-                id:true
+                id:true,
+                comments: true,
+                createdAt: true,
+                
               }
             },
             oauthAuthor:{
@@ -63,17 +72,34 @@ export class VideoService {
                 comments: true
               }
             },
-            CommentRating: true,
           }
         }
       }
     })
     const responseData = {
       uploader:{
-        name: videoData.author,
-
+        name: oauthAuthor.name|| author.name ,
+        picture: oauthAuthor.picture || author.picture,
+        id: oauthAuthor.id || author.id
+      },
+      video:{
+        id,
+        url,
+        description,
+        title,
+        comment: [
+          comments.map((el)=>{
+            return {
+              id: el.id,
+              by: el.userId || el.oauthUserId,
+              text: el.content,
+              at: el.createdAt,
+            }
+          })
+        ]
       }
     }
+    return responseData;
   }
 
   update(id: number, updateVideoDto: UpdateVideoDto) {

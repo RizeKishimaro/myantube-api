@@ -10,10 +10,14 @@ import {
 import { VideoService } from "./video.service";
 import { CreateVideoDto } from "./dto/create-video.dto";
 import { UpdateVideoDto } from "./dto/update-video.dto";
+import { ResponseHelper } from "../utils/responseHelper.service";
 
 @Controller("video")
 export class VideoController {
-  constructor(private readonly videoService: VideoService) {}
+  constructor(
+    private readonly videoService: VideoService,
+    private readonly responseHelper: ResponseHelper
+  ) {}
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
@@ -27,7 +31,8 @@ export class VideoController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.videoService.findOne(+id);
+    const data = this.videoService.findOne(+id);
+    return this.responseHelper.sendSuccessMessage("Successfully Searched",200, data)
   }
 
   @Patch(":id")
