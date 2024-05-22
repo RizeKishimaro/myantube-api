@@ -1,152 +1,137 @@
 const { join } = require("path");
-
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
   // Create some users
-  const user1 = await prisma.user.create({
-    data: {
-      name: "Alice",
-      password: "alicepassword",
-      email: "alice@example.com",
-      isActive: true,
-    },
+  const users = await prisma.user.createMany({
+    data: [
+      { name: "Alice", password: "alicepassword", email: "alice@example.com", isActive: true },
+      { name: "Bob", password: "bobpassword", email: "bob@example.com", isActive: true },
+    ],
   });
 
-  const user2 = await prisma.user.create({
-    data: {
-      name: "Bob",
-      password: "bobpassword",
-      email: "bob@example.com",
-      isActive: true,
-    },
-  });
+  const createdUsers = await prisma.user.findMany();
+  const user1 = createdUsers[0];
+  const user2 = createdUsers[1];
 
   // Create some videos
-  const video1 = await prisma.video.create({
-    data: {
+  const videos = [
+    {
       title: "QiQi- I'm willing to be normal",
       description: "Support Me On twitter.",
+      poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
       url: join(process.cwd(), "public", "videos", "willing-to-be-normal.mp4"),
-      author: { connect: { id: user1.id } },
+      authorId: user1.id,
     },
-  });
-
-  const video2 = await prisma.video.create({
-    data: {
-      title: "Amanaguchi Miku",
+    {
+      title: "Amanamaguchi Miku",
       description: "Forever Hatsunemiku",
+      poster: "https://i.ytimg.com/vi/2oa5WCUpwD8/oar2.jpg?sqp=-oaymwEYCJUDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLCNXgI7nBuHtMphb94nIKEiy-230Q",
       url: join(process.cwd(), "public", "videos", "mikumiku.mp4"),
-      author: { connect: { id: user2.id } },
+      authorId: user2.id,
     },
-  });
+    {
+      title: "Prince Of Darkness",
+      description: "Phonk video is wild :D",
+      poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
+      url: join(process.cwd(), "public", "videos", "prince-of-darkness.mp4"),
+      authorId: user1.id,
+    },
+    {
+      title: "Luka Luka Night Fever",
+      description: "Let's dance with Luka!",
+      poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
+      url: join(process.cwd(), "public", "videos", "lukaluka.mp4"),
+      authorId: user1.id,
+    },
+    {
+      title: "Triple Baka",
+      description: "BakaBakaBaka!",
+      poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
+      url: join(process.cwd(), "public", "videos", "triple_baka.mp4"),
+      authorId: user1.id,
+    },
+    {
+      title: "Eternal Youth",
+      description: "Eternal Youth By Rude",
+      poster: "https://static.wikia.nocookie.net/3410c868-a3a9-4741-a6c8-eb279992d028",
+      url: join(process.cwd(), "public", "videos", "eternal_youth.mp4"),
+      authorId: user1.id,
+    },
+  ];
+
+  await prisma.video.createMany({ data: videos });
+
+  const videoRecords = await prisma.video.findMany();
 
   // Create comments for the videos
-  const comment1 = await prisma.comment.create({
-    data: {
-      content: "I like this song",
-      author: { connect: { id: user1.id } },
-      video: { connect: { id: video1.id } },
-    },
-  });
+  const comments = [
+    { content: "I like this song", authorId: user1.id, videoId: videoRecords[0].id },
+    { content: "Miku Forever!!!!", authorId: user2.id, videoId: videoRecords[0].id },
+    { content: "QiQi is Good at singing", authorId: user1.id, videoId: videoRecords[1].id },
+    { content: "What about kikuo", authorId: user2.id, videoId: videoRecords[1].id },
+    { content: "This video is amazing!", authorId: user1.id, videoId: videoRecords[2].id },
+    { content: "I love this!", authorId: user2.id, videoId: videoRecords[2].id },
+    { content: "Luka Luka Night Fever is the best!", authorId: user1.id, videoId: videoRecords[3].id },
+    { content: "Triple Baka is so funny!", authorId: user2.id, videoId: videoRecords[4].id },
+    { content: "Eternal Youth forever!", authorId: user1.id, videoId: videoRecords[5].id },
+  ];
 
-  const comment2 = await prisma.comment.create({
-    data: {
-      content: "Miku Forever!!!!",
-      author: { connect: { id: user2.id } },
-      video: { connect: { id: video1.id } },
-    },
-  });
+  await prisma.comment.createMany({ data: comments });
 
-  const comment3 = await prisma.comment.create({
-    data: {
-      content: "QiQi is Good at singing",
-      author: { connect: { id: user1.id } },
-      video: { connect: { id: video2.id } },
-    },
-  });
-
-  const comment4 = await prisma.comment.create({
-    data: {
-      content: "What about kikuo",
-      author: { connect: { id: user2.id } },
-      video: { connect: { id: video2.id } },
-    },
-  });
+  const commentRecords = await prisma.comment.findMany();
 
   // Create comment ratings
-  await prisma.commentRating.createMany({
-    data: [
-      {
-        likes: 5,
-        dislikes: 1,
-        commentId: comment1.id,
-        userId: user2.id,
-      },
-      {
-        likes: 3,
-        dislikes: 0,
-        commentId: comment2.id,
-        userId: user1.id,
-      },
-      {
-        likes: 8,
-        dislikes: 2,
-        commentId: comment3.id,
-        userId: user2.id,
-      },
-      {
-        likes: 6,
-        dislikes: 1,
-        commentId: comment4.id,
-        userId: user1.id,
-      },
-    ],
-  });
+  const commentRatings = [
+    { likes: 5, dislikes: 1, commentId: commentRecords[0].id, userId: user2.id },
+    { likes: 3, dislikes: 0, commentId: commentRecords[1].id, userId: user1.id },
+    { likes: 8, dislikes: 2, commentId: commentRecords[2].id, userId: user2.id },
+    { likes: 6, dislikes: 1, commentId: commentRecords[3].id, userId: user1.id },
+    { likes: 10, dislikes: 0, commentId: commentRecords[4].id, userId: user2.id },
+    { likes: 7, dislikes: 2, commentId: commentRecords[5].id, userId: user1.id },
+    { likes: 4, dislikes: 1, commentId: commentRecords[6].id, userId: user2.id },
+    { likes: 9, dislikes: 0, commentId: commentRecords[7].id, userId: user1.id },
+    { likes: 6, dislikes: 3, commentId: commentRecords[8].id, userId: user2.id },
+  ];
+
+  await prisma.commentRating.createMany({ data: commentRatings });
 
   // Create video likes
-  await prisma.videoLike.createMany({
-    data: [
-      {
-        userId: user1.id,
-        videoId: video1.id,
-      },
-      {
-        userId: user2.id,
-        videoId: video1.id,
-      },
-      {
-        userId: user1.id,
-        videoId: video2.id,
-      },
-      {
-        userId: user2.id,
-        videoId: video2.id,
-      },
-    ],
-  });
+  const videoLikes = [
+    { userId: user1.id, videoId: videoRecords[0].id },
+    { userId: user2.id, videoId: videoRecords[0].id },
+    { userId: user1.id, videoId: videoRecords[1].id },
+    { userId: user2.id, videoId: videoRecords[1].id },
+    { userId: user1.id, videoId: videoRecords[2].id },
+    { userId: user2.id, videoId: videoRecords[2].id },
+    { userId: user1.id, videoId: videoRecords[3].id },
+    { userId: user2.id, videoId: videoRecords[3].id },
+    { userId: user1.id, videoId: videoRecords[4].id },
+    { userId: user2.id, videoId: videoRecords[4].id },
+    { userId: user1.id, videoId: videoRecords[5].id },
+    { userId: user2.id, videoId: videoRecords[5].id },
+  ];
 
-  await prisma.views.createMany({
-    data: [
-      {
-        userId: user1.id,
-        videoId: video1.id,
-      },
-      {
-        userId: user2.id,
-        videoId: video1.id,
-      },
-      {
-        userId: user1.id,
-        videoId: video2.id,
-      },
-      {
-        userId: user2.id,
-        videoId: video2.id,
-      },
-    ],
-  });
+  await prisma.videoLike.createMany({ data: videoLikes });
+
+  // Create video views
+  const videoViews = [
+    { userId: user1.id, videoId: videoRecords[0].id },
+    { userId: user2.id, videoId: videoRecords[0].id },
+    { userId: user1.id, videoId: videoRecords[1].id },
+    { userId: user2.id, videoId: videoRecords[1].id },
+    { userId: user1.id, videoId: videoRecords[2].id },
+    { userId: user2.id, videoId: videoRecords[2].id },
+    { userId: user1.id, videoId: videoRecords[3].id },
+    { userId: user2.id, videoId: videoRecords[3].id },
+    { userId: user1.id, videoId: videoRecords[4].id },
+    { userId: user2.id, videoId: videoRecords[4].id },
+    { userId: user1.id, videoId: videoRecords[5].id },
+    { userId: user2.id, videoId: videoRecords[5].id },
+  ];
+
+  await prisma.views.createMany({ data: videoViews });
 }
 
 main()
