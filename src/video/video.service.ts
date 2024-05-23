@@ -70,6 +70,7 @@ export class VideoService {
       description,
       title,
       uploadedAt,
+      poster,
       comments,
       _count
     } = await this.prismaService.video.findFirst({
