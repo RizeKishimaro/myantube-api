@@ -47,7 +47,6 @@ lerna-debug.log*
 .tmp
 
 #media
-*.mp4
 
 # Runtime data
 pids
