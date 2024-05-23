@@ -74,6 +74,13 @@ export class VideoService {
     } = await this.prismaService.video.findFirst({
       where: { id: videoId },
       include: {
+          _count: {
+            select:{
+              likes: true,
+              dislikes: true,
+              views: true
+            }
+          },
         author: {
           select: {
             name: true,
