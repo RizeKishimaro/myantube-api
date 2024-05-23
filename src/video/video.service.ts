@@ -102,6 +102,7 @@ export class VideoService {
               select: {
                 name: true,
                 id: true,
+                  picture: true,
                 comments: true,
                 createdAt: true,
               },
@@ -109,6 +110,7 @@ export class VideoService {
             oauthAuthor: {
               select: {
                 name: true,
+                picture: true,
                 id: true,
                 comments: true,
               },
@@ -132,6 +134,7 @@ export class VideoService {
           return {
             id: el.id,
             by: el?.userId || el?.oauthUserId,
+            profile: el.author.picture || el.oauthAuthor.picture,
             text: el.content,
             at: el.createdAt,
           };
