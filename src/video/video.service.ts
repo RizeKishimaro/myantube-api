@@ -71,6 +71,7 @@ export class VideoService {
       title,
       uploadedAt,
       comments,
+      _count
     } = await this.prismaService.video.findFirst({
       where: { id: videoId },
       include: {
@@ -135,6 +136,11 @@ export class VideoService {
             at: el.createdAt,
           };
         }),
+        status:{
+          likes: _count.likes,
+          dislikes: _count.dislikes,
+          views: _count.views,
+        }
       },
     };
     return responseData;
