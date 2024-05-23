@@ -36,7 +36,7 @@ export class VideoService {
           },
         },
       })
-    const videoData = data.map(({poster,author,oauthAuthor,_count,url,id,description})=>{
+    const videoData = data.map(({title,poster,author,oauthAuthor,_count,url,id,description})=>{
       return {
         author: {
           id:author?.id || oauthAuthor?.id,
@@ -45,6 +45,7 @@ export class VideoService {
         },
         video:{
           id,
+          title,
           url,
           description,
           poster,
