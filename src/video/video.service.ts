@@ -130,6 +130,7 @@ export class VideoService {
         url,
         description,
         title,
+        poster,
         comment: comments.map((el) => {
           return {
             id: el.id,
