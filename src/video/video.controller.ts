@@ -40,8 +40,8 @@ export class VideoController {
   })
   .finally(async () => {
     await prisma.$disconnect();
+        return "Successfully seeded"
   });
-    return "Successfully seeded"
   }
   @Get(":id")
   async findOne(@Param("id") id: string) {
