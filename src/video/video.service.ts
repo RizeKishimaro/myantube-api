@@ -137,7 +137,7 @@ export class VideoService {
           return {
             id: el.id,
             by: el?.userId || el?.oauthUserId,
-            profile: el.author.picture || el.oauthAuthor.picture,
+            profile: el.author?.picture || el.oauthAuthor?.picture,
             text: el.content,
             at: el.createdAt,
           };
