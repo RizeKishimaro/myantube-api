@@ -46,7 +46,6 @@ export class VideoController {
   @Get(":id")
   async findOne(@Param("id") id: string) {
     const data = await this.videoService.findOne(+id);
-    console.log(data);
     return this.responseHelper.sendSuccessMessage(
       "Successfully Searched",
       200,
