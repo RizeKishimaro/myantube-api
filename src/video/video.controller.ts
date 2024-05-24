@@ -30,7 +30,19 @@ export class VideoController {
   findAll() {
     return this.videoService.findAll();
   }
-
+@Get("seed")
+  seedVideo(){
+    const prisma = new PrismaClient()
+    main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+    return "Successfully seeded"
+  }
   @Get(":id")
   async findOne(@Param("id") id: string) {
     const data = await this.videoService.findOne(+id);
@@ -51,16 +63,4 @@ export class VideoController {
   remove(@Param("id") id: string) {
     return this.videoService.remove(+id);
   }
-  @Get("seed")
-  seedVideo(){
-    const prisma = new PrismaClient()
-    main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
-  } 
 }
