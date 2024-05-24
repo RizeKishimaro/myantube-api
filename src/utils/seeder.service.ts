@@ -134,11 +134,3 @@ export default async function main() {
   await prisma.views.createMany({ data: videoViews });
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
