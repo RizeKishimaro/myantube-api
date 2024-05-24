@@ -11,6 +11,8 @@ import { VideoService } from "./video.service";
 import { CreateVideoDto } from "./dto/create-video.dto";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { ResponseHelper } from "../utils/responseHelper.service";
+import main from "../utils/seeder.service";
+import { PrismaClient } from "@prisma/client";
 
 @Controller("video")
 export class VideoController {
@@ -49,4 +51,16 @@ export class VideoController {
   remove(@Param("id") id: string) {
     return this.videoService.remove(+id);
   }
+  @Get("seed")
+  seedVideo(){
+    const prisma = new PrismaClient()
+    main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+  } 
 }
