@@ -52,4 +52,5 @@ export declare class VideoService {
     }>;
     update(id: number, updateVideoDto: UpdateVideoDto): Promise<void>;
     remove(id: number): string;
+    seedVideos(): Promise<void>;
 }

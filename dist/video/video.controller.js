@@ -18,8 +18,6 @@ const video_service_1 = require("./video.service");
 const create_video_dto_1 = require("./dto/create-video.dto");
 const update_video_dto_1 = require("./dto/update-video.dto");
 const responseHelper_service_1 = require("../utils/responseHelper.service");
-const seeder_service_1 = require("../utils/seeder.service");
-const client_1 = require("@prisma/client");
 let VideoController = class VideoController {
     constructor(videoService, responseHelper) {
         this.videoService = videoService;
@@ -31,17 +29,9 @@ let VideoController = class VideoController {
     findAll() {
         return this.videoService.findAll();
     }
-    seedVideo() {
-        const prisma = new client_1.PrismaClient();
-        (0, seeder_service_1.default)()
-            .catch((e) => {
-            console.error(e);
-            process.exit(1);
-        })
-            .finally(async () => {
-            await prisma.$disconnect();
-            return "Successfully seeded";
-        });
+    async seedVideo() {
+        await this.videoService.seedVideos();
+        return "Success!";
     }
     async findOne(id) {
         const data = await this.videoService.findOne(+id);
@@ -72,7 +62,7 @@ __decorate([
     (0, common_1.Get)("seed"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], VideoController.prototype, "seedVideo", null);
 __decorate([
     (0, common_1.Get)(":id"),

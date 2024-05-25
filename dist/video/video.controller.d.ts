@@ -26,7 +26,7 @@ export declare class VideoController {
             };
         };
     }[]>;
-    seedVideo(): void;
+    seedVideo(): Promise<string>;
     findOne(id: string): Promise<{
         statusCode: number;
         message: string;
