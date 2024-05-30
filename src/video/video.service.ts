@@ -21,6 +21,7 @@ async searchVideos(searchString){
         }
       }
     })
+    return videos;
   }
   async findAll() {
       const data = await this.prismaService.video.findMany({

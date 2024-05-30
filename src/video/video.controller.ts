@@ -36,6 +36,11 @@ export class VideoController {
     await this.videoService.seedVideos();
     return "Success!";
   }
+  @Get("search")
+  async searchVideos(@Query("q") text:string){
+    const videos = this.videoService.searchVideos(text);
+    return videos;
+  }
   @Get(":id")
   async findOne(@Param("id",ParseIntPipe) id: number) {
     const data = await this.videoService.findOne(+id);
@@ -44,10 +49,6 @@ export class VideoController {
       200,
       data,
     );
-  }
-  @Get("search")
-  async searchVideos(@Query("q") text:string){
-    const videos = this.videoService.searchVideos(text);
   }
 
   @Patch(":id")
