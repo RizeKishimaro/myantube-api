@@ -17,7 +17,7 @@ async searchVideos(searchString: string){
   const videos = await this.prismaService.video.findMany({
       where:{
         title: { 
-          contains: `_${searchString}_`,
+          contains: searchString,
         }
       }
     })
