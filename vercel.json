@@ -2,18 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "/dist/main.js",
+      "src": "dist/main.js",
       "use": "@vercel/node"
     }
   ],
-  "buildCommand": "npx prisma generate && npx prisma migrate deploy",
-  "devCommand": "npm run start:prod",
-  "installCommand": "npm install && npm i -g @nestjs/cli",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/dist/main.js",
-      "methods": ["GET", "POST", "PUT", "DELETE"]
+      "dest": "dist/main.js",
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
     }
   ]
 }
