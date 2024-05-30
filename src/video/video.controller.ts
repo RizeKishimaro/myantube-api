@@ -38,6 +38,7 @@ export class VideoController {
   }
   @Get("search")
   async searchVideos(@Query("q") text:string){
+    console.log("route works")
     const videos = this.videoService.searchVideos(text);
     return videos;
   }

@@ -13,7 +13,7 @@ export class VideoService {
       data: createVideoDto
     })
   }
-async searchVideos(searchString){
+async searchVideos(searchString: string){
   const videos = await this.prismaService.video.findMany({
       where:{
         title: { 
