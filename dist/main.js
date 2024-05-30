@@ -6,8 +6,8 @@ const common_1 = require("@nestjs/common");
 const path_1 = require("path");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.useStaticAssets((0, path_1.join)(process.cwd(), 'public'), {
-        prefix: '/public/',
+    app.useStaticAssets((0, path_1.join)(process.cwd(), "public"), {
+        prefix: "/public/",
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         transformOptions: {

@@ -17,8 +17,10 @@ let VideoService = class VideoService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    create(createVideoDto) {
-        return "goffy ahhhh";
+    async create(createVideoDto) {
+        await this.prismaService.video.create({
+            data: createVideoDto,
+        });
     }
     async findAll() {
         const data = await this.prismaService.video.findMany({
@@ -27,8 +29,8 @@ let VideoService = class VideoService {
                     select: {
                         likes: true,
                         dislikes: true,
-                        views: true
-                    }
+                        views: true,
+                    },
                 },
                 author: {
                     select: {
@@ -46,12 +48,12 @@ let VideoService = class VideoService {
                 },
             },
         });
-        const videoData = data.map(({ title, poster, author, oauthAuthor, _count, url, id, description }) => {
+        const videoData = data.map(({ title, poster, author, oauthAuthor, _count, url, id, description, }) => {
             return {
                 author: {
                     id: author?.id || oauthAuthor?.id,
                     name: author?.name || oauthAuthor?.name,
-                    picture: author?.picture || oauthAuthor?.picture
+                    picture: author?.picture || oauthAuthor?.picture,
                 },
                 video: {
                     id,
@@ -62,23 +64,23 @@ let VideoService = class VideoService {
                     status: {
                         likes: _count.likes,
                         dislikes: _count.dislikes,
-                        views: _count.views
-                    }
-                }
+                        views: _count.views,
+                    },
+                },
             };
         });
         return videoData;
     }
     async findOne(videoId) {
-        const { author, oauthAuthor, id, url, description, title, uploadedAt, poster, comments, _count } = await this.prismaService.video.findFirst({
+        const { author, oauthAuthor, id, url, description, title, uploadedAt, poster, comments, _count, } = await this.prismaService.video.findFirst({
             where: { id: videoId },
             include: {
                 _count: {
                     select: {
                         likes: true,
                         dislikes: true,
-                        views: true
-                    }
+                        views: true,
+                    },
                 },
                 author: {
                     select: {
@@ -129,6 +131,7 @@ let VideoService = class VideoService {
                 description,
                 title,
                 poster,
+                uploadedAt,
                 comment: comments.map((el) => {
                     return {
                         id: el.id,
@@ -142,27 +145,84 @@ let VideoService = class VideoService {
                     likes: _count.likes,
                     dislikes: _count.dislikes,
                     views: _count.views,
-                }
+                },
             },
         };
         return responseData;
     }
     async update(id, updateVideoDto) {
-        await this.prismaService.videoLike.create({
+        const videoData = await this.prismaService.video.findUnique({
+            where: { id },
+        });
+        await this.prismaService.video.update({
+            where: { id },
             data: {
-                videoId: updateVideoDto.videoId,
-                userId: updateVideoDto.userId,
+                title: updateVideoDto.title || videoData.title,
+                description: updateVideoDto.description || videoData.description,
+                poster: updateVideoDto.poster || videoData.poster,
             },
         });
     }
-    remove(id) {
-        return `This action removes a #${id} video`;
+    async remove(id) {
+        await this.prismaService.video.delete({
+            where: { id },
+        });
+    }
+    async createComment(createCommentDTO) {
+        await this.prismaService.comment.create({
+            data: {
+                userId: createCommentDTO.userId,
+                videoId: createCommentDTO.videoId,
+                content: createCommentDTO.content,
+            },
+        });
+    }
+    async addOrRemoveLike(createLikeDTO) {
+        const hasLike = await this.prismaService.videoLike.count({
+            where: { userId: createLikeDTO.userId },
+        });
+        if (hasLike === 0) {
+            await this.prismaService.videoLike.create({
+                data: {
+                    videoId: createLikeDTO.videoId,
+                    userId: createLikeDTO.userId,
+                },
+            });
+        }
+        else {
+            await this.prismaService.videoLike.delete({
+                where: {
+                    userId: createLikeDTO.userId,
+                    videoId: createLikeDTO.videoId,
+                },
+            });
+        }
+    }
+    async createView(createViewDTO) {
+        await this.prismaService.views.create({
+            data: {
+                userId: createViewDTO.userId,
+                videoId: createViewDTO.videiId,
+            },
+        });
     }
     async seedVideos() {
         const users = await this.prismaService.user.createMany({
             data: [
-                { name: "Alice", picture: (0, path_1.join)("public", "profiles", 'default-fischl.jpg'), password: "alicepassword", email: "alice@example.com", isActive: true },
-                { name: "Rize Kishimaro", picture: (0, path_1.join)("public", "profiles", 'anime-default-pfp-5.jpg'), password: "bobpassword", email: "bob@example.com", isActive: true },
+                {
+                    name: "Alice",
+                    picture: (0, path_1.join)("public", "profiles", "default-fischl.jpg"),
+                    password: "alicepassword",
+                    email: "alice@example.com",
+                    isActive: true,
+                },
+                {
+                    name: "Rize Kishimaro",
+                    picture: (0, path_1.join)("public", "profiles", "anime-default-pfp-5.jpg"),
+                    password: "bobpassword",
+                    email: "bob@example.com",
+                    isActive: true,
+                },
             ],
         });
         const createdUsers = await this.prismaService.user.findMany();
@@ -215,28 +275,109 @@ let VideoService = class VideoService {
         await this.prismaService.video.createMany({ data: videos });
         const videoRecords = await this.prismaService.video.findMany();
         const comments = [
-            { content: "I like this song", userId: user1.id, videoId: videoRecords[0].id },
-            { content: "Miku Forever!!!!", userId: user2.id, videoId: videoRecords[0].id },
-            { content: "QiQi is Good at singing", userId: user1.id, videoId: videoRecords[1].id },
-            { content: "What about kikuo", userId: user2.id, videoId: videoRecords[1].id },
-            { content: "This video is amazing!", userId: user1.id, videoId: videoRecords[2].id },
-            { content: "I love this!", userId: user2.id, videoId: videoRecords[2].id },
-            { content: "Luka Luka Night Fever is the best!", userId: user1.id, videoId: videoRecords[3].id },
-            { content: "Triple Baka is so funny!", userId: user2.id, videoId: videoRecords[4].id },
-            { content: "Eternal Youth forever!", userId: user1.id, videoId: videoRecords[5].id },
+            {
+                content: "I like this song",
+                userId: user1.id,
+                videoId: videoRecords[0].id,
+            },
+            {
+                content: "Miku Forever!!!!",
+                userId: user2.id,
+                videoId: videoRecords[0].id,
+            },
+            {
+                content: "QiQi is Good at singing",
+                userId: user1.id,
+                videoId: videoRecords[1].id,
+            },
+            {
+                content: "What about kikuo",
+                userId: user2.id,
+                videoId: videoRecords[1].id,
+            },
+            {
+                content: "This video is amazing!",
+                userId: user1.id,
+                videoId: videoRecords[2].id,
+            },
+            {
+                content: "I love this!",
+                userId: user2.id,
+                videoId: videoRecords[2].id,
+            },
+            {
+                content: "Luka Luka Night Fever is the best!",
+                userId: user1.id,
+                videoId: videoRecords[3].id,
+            },
+            {
+                content: "Triple Baka is so funny!",
+                userId: user2.id,
+                videoId: videoRecords[4].id,
+            },
+            {
+                content: "Eternal Youth forever!",
+                userId: user1.id,
+                videoId: videoRecords[5].id,
+            },
         ];
         await this.prismaService.comment.createMany({ data: comments });
         const commentRecords = await this.prismaService.comment.findMany();
         const commentRatings = [
-            { likes: 5, dislikes: 1, commentId: commentRecords[0].id, userId: user2.id },
-            { likes: 3, dislikes: 0, commentId: commentRecords[1].id, userId: user1.id },
-            { likes: 8, dislikes: 2, commentId: commentRecords[2].id, userId: user2.id },
-            { likes: 6, dislikes: 1, commentId: commentRecords[3].id, userId: user1.id },
-            { likes: 10, dislikes: 0, commentId: commentRecords[4].id, userId: user2.id },
-            { likes: 7, dislikes: 2, commentId: commentRecords[5].id, userId: user1.id },
-            { likes: 4, dislikes: 1, commentId: commentRecords[6].id, userId: user2.id },
-            { likes: 9, dislikes: 0, commentId: commentRecords[7].id, userId: user1.id },
-            { likes: 6, dislikes: 3, commentId: commentRecords[8].id, userId: user2.id },
+            {
+                likes: 5,
+                dislikes: 1,
+                commentId: commentRecords[0].id,
+                userId: user2.id,
+            },
+            {
+                likes: 3,
+                dislikes: 0,
+                commentId: commentRecords[1].id,
+                userId: user1.id,
+            },
+            {
+                likes: 8,
+                dislikes: 2,
+                commentId: commentRecords[2].id,
+                userId: user2.id,
+            },
+            {
+                likes: 6,
+                dislikes: 1,
+                commentId: commentRecords[3].id,
+                userId: user1.id,
+            },
+            {
+                likes: 10,
+                dislikes: 0,
+                commentId: commentRecords[4].id,
+                userId: user2.id,
+            },
+            {
+                likes: 7,
+                dislikes: 2,
+                commentId: commentRecords[5].id,
+                userId: user1.id,
+            },
+            {
+                likes: 4,
+                dislikes: 1,
+                commentId: commentRecords[6].id,
+                userId: user2.id,
+            },
+            {
+                likes: 9,
+                dislikes: 0,
+                commentId: commentRecords[7].id,
+                userId: user1.id,
+            },
+            {
+                likes: 6,
+                dislikes: 3,
+                commentId: commentRecords[8].id,
+                userId: user2.id,
+            },
         ];
         await this.prismaService.commentRating.createMany({ data: commentRatings });
         const videoLikes = [

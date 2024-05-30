@@ -58,7 +58,7 @@ model ActivationCode {
 model Comment {
   id            Int             @id @default(autoincrement())
   content       String
-  video         Video           @relation(fields: [videoId], references: [id])
+  video         Video           @relation(fields: [videoId], references: [id], onDelete: Cascade)
   author        User?           @relation(fields: [userId], references: [id])
   oauthAuthor   OauthUser?      @relation(fields: [oauthUserId], references: [id])
   userId        String?
@@ -82,7 +82,7 @@ model CommentRating {
 
 model VideoRating {
   id          Int        @id @default(autoincrement())
-  video       Video      @relation(fields: [videoId], references: [id])
+  video       Video      @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId     Int
   userId      String?
   oauthUserId String?
@@ -92,7 +92,7 @@ model VideoRating {
 
 model VideoLike {
   id          Int        @id @default(autoincrement())
-  video       Video      @relation(fields: [videoId], references: [id])
+  video       Video      @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId     Int
   user        User       @relation(fields: [userId], references: [id])
   userId      String
@@ -102,7 +102,7 @@ model VideoLike {
 
 model VideoDislike {
   id          Int        @id @default(autoincrement())
-  video       Video      @relation(fields: [videoId], references: [id])
+  video       Video      @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId     Int
   user        User       @relation(fields: [userId], references: [id])
   userId      String
@@ -112,7 +112,7 @@ model VideoDislike {
 
 model Views {
   id          Int        @id @default(autoincrement())
-  video       Video      @relation(fields: [videoId], references: [id])
+  video       Video      @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId     Int
   user        User       @relation(fields: [userId], references: [id])
   userId      String
@@ -126,8 +126,8 @@ model Video {
   description String?
   poster      String?
   url         String         @unique
-  author      User           @relation(fields: [userId], references: [id])
-  oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id])
+  author      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
   userId      String
   oauthUserId String?
   comments    Comment[]
@@ -149,3 +149,4 @@ model Subscriber {
   oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
+

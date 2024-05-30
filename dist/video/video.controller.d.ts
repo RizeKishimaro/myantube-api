@@ -6,7 +6,7 @@ export declare class VideoController {
     private readonly videoService;
     private readonly responseHelper;
     constructor(videoService: VideoService, responseHelper: ResponseHelper);
-    create(createVideoDto: CreateVideoDto): string;
+    create(createVideoDto: CreateVideoDto): Promise<void>;
     findAll(): Promise<{
         author: {
             id: string;
@@ -33,5 +33,5 @@ export declare class VideoController {
         data: any;
     }>;
     update(id: string, updateVideoDto: UpdateVideoDto): Promise<void>;
-    remove(id: string): string;
+    remove(id: string): Promise<void>;
 }

@@ -3,14 +3,25 @@ import { CreateVideoDto } from "./dto/create-video.dto";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { PrismaService } from "../utils/prisma.service";
 import { join } from "path";
+import { CreateLikeDTO } from "./dto/create-like.dto";
 
 @Injectable()
 export class VideoService {
   constructor(private readonly prismaService: PrismaService) {}
-  create(createVideoDto: CreateVideoDto) {
-    return "goffy ahhhh";
+  async create(createVideoDto: CreateVideoDto) {
+    await this.prismaService.video.create({
+      data: createVideoDto
+    })
   }
-
+async searchVideos(searchString){
+  const videos = await this.prismaService.video.findMany({
+      where:{
+        title: { 
+          contains: `_${searchString}_`,
+        }
+      }
+    })
+  }
   async findAll() {
       const data = await this.prismaService.video.findMany({
         include: {
@@ -133,6 +144,7 @@ export class VideoService {
         description,
         title,
         poster,
+        uploadedAt,
         comment: comments.map((el) => {
           return {
             id: el.id,
@@ -153,16 +165,84 @@ export class VideoService {
   }
 
   async update(id: number, updateVideoDto: UpdateVideoDto) {
-    await this.prismaService.videoLike.create({
-      data: {
-        videoId: updateVideoDto.videoId,
-        userId: updateVideoDto.userId,
-      },
-    });
+   const videoData = await this.prismaService.video.findUnique({
+      where: {id}
+    })
+    await this.prismaService.video.update({
+      where:{id},
+      data:{
+        title: updateVideoDto.title || videoData.title,
+        description: updateVideoDto.description || videoData.description,
+        poster: updateVideoDto.poster || videoData.poster,
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} video`;
+  async remove(id: number) {
+    await this.prismaService.video.delete({
+      where:{id}
+    })
+  }
+  async createComment(createCommentDTO){
+    await this.prismaService.comment.create({
+      data:{
+        userId: createCommentDTO.userId,
+        videoId: createCommentDTO.videoId,
+        content: createCommentDTO.content
+      }
+    })
+  }
+  async addOrRemoveLike(createLikeDTO:CreateLikeDTO){
+    const hasLike = await this.prismaService.videoLike.findFirst({
+      where:{ userId: createLikeDTO.userId},
+      select:{
+        id: true,
+      }
+    })
+    if(!hasLike.id){
+      await this.prismaService.videoLike.create({
+        data:{
+          videoId: createLikeDTO.videoId,
+          userId: createLikeDTO.userId,
+        }
+      })
+    }else{
+      await this.prismaService.videoLike.delete({
+        where:{ 
+          id: hasLike.id
+        }
+      })
+    }
+  }
+  async addOrRemoveDislike(createLikeDTO:CreateLikeDTO){
+    const hasDislike = await this.prismaService.videoLike.findFirst({
+      where:{ userId: createLikeDTO.userId},
+      select:{
+        id: true,
+      }
+    })
+    if(!hasDislike.id){
+      await this.prismaService.videoLike.create({
+        data:{
+          videoId: createLikeDTO.videoId,
+          userId: createLikeDTO.userId,
+        }
+      })
+    }else{
+      await this.prismaService.videoLike.delete({
+        where:{
+          id: hasDislike.id
+        }
+      })
+    }
+  }
+  async createView(createViewDTO){
+    await this.prismaService.views.create({
+      data:{
+        userId: createViewDTO.userId,
+        videoId: createViewDTO.videiId,
+      }
+    })
   }
   async seedVideos(){
     // Create some users
