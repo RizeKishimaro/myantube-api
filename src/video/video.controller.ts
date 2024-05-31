@@ -29,7 +29,7 @@ export class VideoController {
     return this.videoService.createComment(createCommentDTO);
   }
   @Post()
-  addOrRemoveLike(createLikeDTO: CreateLikeDTO){
+  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO){
     return this.videoService.addOrRemoveLike(createLikeDTO);
   }
   @Post()
