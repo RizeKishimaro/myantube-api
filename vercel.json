@@ -12,5 +12,7 @@
       "dest": "/dist/main.js",
       "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
     }
-  ]
+  ],
+  "devCommand": "npm run start:dev",
+  "buildCommand": "npm i && npx prisma migrate reset && npx prisma generate",
 }
