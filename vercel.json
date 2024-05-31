@@ -14,5 +14,5 @@
     }
   ],
   "devCommand": "npm run start:dev",
-  "buildCommand": "npm i && npx prisma migrate reset && npx prisma generate",
+  "buildCommand": "npm i && npx prisma migrate reset && npx prisma generate"
 }
