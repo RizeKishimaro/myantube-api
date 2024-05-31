@@ -13,7 +13,9 @@ import { VideoService } from "./video.service";
 import { CreateVideoDto } from "./dto/create-video.dto";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { ResponseHelper } from "../utils/responseHelper.service";
-import { PrismaClient } from "@prisma/client";
+import { CreateCommentDTO } from "./dto/create-comment.dto";
+import { CreateLikeDTO } from "./dto/create-like.dto";
+import { CreateViewDTO } from "./dto/create-view.dto";
 
 @Controller("video")
 export class VideoController {
@@ -23,10 +25,26 @@ export class VideoController {
   ) {}
 
   @Post()
+  createComment(createCommentDTO: CreateCommentDTO){
+    return this.videoService.createComment(createCommentDTO);
+  }
+  @Post()
+  addOrRemoveLike(createLikeDTO: CreateLikeDTO){
+    return this.videoService.addOrRemoveLike(createLikeDTO);
+  }
+  @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
     return this.videoService.create(createVideoDto);
   }
+  @Post()
+  addOrRemoveDislike(createLikeDTO: CreateLikeDTO){
+    return this.videoService.addOrRemoveDislike(createLikeDTO);
+  }
 
+  @Post()
+  createView(createViewDTO:CreateViewDTO){
+    return this.videoService.createView(createViewDTO)
+  }
   @Get()
   findAll() {
     return this.videoService.findAll();
@@ -50,6 +68,14 @@ export class VideoController {
       data,
     );
   }
+<<<<<<< Updated upstream
+=======
+  @Get("search")
+  async searchVideos(@Query("q") text:string){
+    const videos = this.videoService.searchVideos(text);
+    return videos;
+  }
+>>>>>>> Stashed changes
 
   @Patch(":id")
   async update(@Param("id",ParseIntPipe) id: string, @Body() updateVideoDto: UpdateVideoDto) {

@@ -4,6 +4,8 @@ import { UpdateVideoDto } from "./dto/update-video.dto";
 import { PrismaService } from "../utils/prisma.service";
 import { join } from "path";
 import { CreateLikeDTO } from "./dto/create-like.dto";
+import { CreateCommentDTO } from "./dto/create-comment.dto";
+import { CreateViewDTO } from "./dto/create-view.dto";
 
 @Injectable()
 export class VideoService {
@@ -184,7 +186,7 @@ async searchVideos(searchString: string){
       where:{id}
     })
   }
-  async createComment(createCommentDTO){
+  async createComment(createCommentDTO: CreateCommentDTO){
     await this.prismaService.comment.create({
       data:{
         userId: createCommentDTO.userId,
@@ -237,11 +239,11 @@ async searchVideos(searchString: string){
       })
     }
   }
-  async createView(createViewDTO){
+  async createView(createViewDTO: CreateViewDTO){
     await this.prismaService.views.create({
       data:{
         userId: createViewDTO.userId,
-        videoId: createViewDTO.videiId,
+        videoId: createViewDTO.videoId,
       }
     })
   }
