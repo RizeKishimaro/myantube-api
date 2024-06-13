@@ -24,24 +24,24 @@ export class VideoController {
     private readonly responseHelper: ResponseHelper,
   ) {}
 
-  @Post()
+  @Post("createComment")
   createComment(createCommentDTO: CreateCommentDTO){
     return this.videoService.createComment(createCommentDTO);
   }
-  @Post()
-  addOrRemoveLike(createLikeDTO: CreateLikeDTO){
+  @Post("createLike")
+  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO){
     return this.videoService.addOrRemoveLike(createLikeDTO);
   }
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
     return this.videoService.create(createVideoDto);
   }
-  @Post()
+  @Post("createDislike")
   addOrRemoveDislike(createLikeDTO: CreateLikeDTO){
     return this.videoService.addOrRemoveDislike(createLikeDTO);
   }
 
-  @Post()
+  @Post("addView")
   createView(createViewDTO:CreateViewDTO){
     return this.videoService.createView(createViewDTO)
   }

@@ -20,7 +20,7 @@ export class AuthController {
       picture,
       accessToken,
     });
-    const redirectUrl = "http://127.0.0.1:3000/auth/thankyou"; // Your redirect URL
+    const redirectUrl = "http://127.0.0.1:3000"; // Your redirect URL
     const redirectWithParams = `${redirectUrl}?email=${email}&name=${firstName}+${lastName}&picture=${picture}`;
     res.redirect(redirectWithParams);
   }

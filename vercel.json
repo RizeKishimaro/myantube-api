@@ -12,5 +12,9 @@
       "dest": "dist/main.js",
       "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
     }
-  ]
+  ],
+
+  "installCommand": "npm i && npm i -g @nestjs/cli",
+  "devCommand": "npm run start:prod",
+  "buildCommand": "npx prisma migrate reset && npx prisma generate"
 }

@@ -7,6 +7,7 @@ import { EmailService } from "../utils/email.service";
 import { ResponseHelper } from "../utils/responseHelper.service";
 import { PassportModule } from "@nestjs/passport";
 import { GoogleStrategy } from "./google.strategy";
+import { CryptoService } from "../../lib/aes.lib";
 
 @Module({
   imports: [PassportModule.register({ defaultStrategy: "google" })],
@@ -18,6 +19,7 @@ import { GoogleStrategy } from "./google.strategy";
     EmailService,
     ResponseHelper,
     GoogleStrategy,
+    CryptoService
   ],
 })
 export class AuthModule {}
