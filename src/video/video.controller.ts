@@ -68,15 +68,6 @@ export class VideoController {
       data,
     );
   }
-<<<<<<< Updated upstream
-=======
-  @Get("search")
-  async searchVideos(@Query("q") text:string){
-    const videos = this.videoService.searchVideos(text);
-    return videos;
-  }
->>>>>>> Stashed changes
-
   @Patch(":id")
   async update(@Param("id",ParseIntPipe) id: string, @Body() updateVideoDto: UpdateVideoDto) {
     return await this.videoService.update(+id, updateVideoDto);
