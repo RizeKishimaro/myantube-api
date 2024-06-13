@@ -68,6 +68,7 @@ export class VideoController {
       data,
     );
   }
+
   @Patch(":id")
   async update(@Param("id",ParseIntPipe) id: string, @Body() updateVideoDto: UpdateVideoDto) {
     return await this.videoService.update(+id, updateVideoDto);
