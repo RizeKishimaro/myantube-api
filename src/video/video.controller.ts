@@ -25,7 +25,7 @@ export class VideoController {
   ) {}
 
   @Post("createComment")
-  createComment(createCommentDTO: CreateCommentDTO){
+  createComment(@Body() createCommentDTO: CreateCommentDTO){
     console.log(createCommentDTO)
     return this.videoService.createComment(createCommentDTO);
   }
@@ -38,12 +38,12 @@ export class VideoController {
     return this.videoService.create(createVideoDto);
   }
   @Post("createDislike")
-  addOrRemoveDislike(createLikeDTO: CreateLikeDTO){
+  addOrRemoveDislike(@Body() createLikeDTO: CreateLikeDTO){
     return this.videoService.addOrRemoveDislike(createLikeDTO);
   }
 
   @Post("addView")
-  createView(createViewDTO:CreateViewDTO){
+  createView(@Body() createViewDTO:CreateViewDTO){
     return this.videoService.createView(createViewDTO)
   }
   @Get()
