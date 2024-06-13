@@ -26,6 +26,7 @@ export class VideoController {
 
   @Post("createComment")
   createComment(createCommentDTO: CreateCommentDTO){
+    console.log(createCommentDTO)
     return this.videoService.createComment(createCommentDTO);
   }
   @Post("createLike")

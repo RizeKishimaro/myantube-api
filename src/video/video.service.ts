@@ -187,6 +187,7 @@ async searchVideos(searchString: string){
     })
   }
   async createComment(createCommentDTO: CreateCommentDTO){
+    console.log(createCommentDTO)
     await this.prismaService.comment.create({
       data:{
         userId: createCommentDTO.userId,
