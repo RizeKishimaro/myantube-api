@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE `Video` MODIFY `poster` VARCHAR(3000) NULL,
-    MODIFY `urlHd` VARCHAR(3000) NULL,
-    MODIFY `urlSd` VARCHAR(3000) NULL;
