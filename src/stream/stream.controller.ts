@@ -52,12 +52,7 @@ export class StreamController {
     const videoUrl = query.urlHd || query.urlSd 
 
     try {
-      const videoResponse = await axios.get(videoUrl, {
-        responseType: 'stream',
-        headers: {
-          Range: range,
-        },
-      });
+      const videoResponse = await axios.get(videoUrl);
 
       const headers = {
         'Content-Range': videoResponse.headers['content-range'],
