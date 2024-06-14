@@ -125,7 +125,8 @@ model Video {
   title       String
   description String?
   poster      String?
-  url         String         @unique
+  urlHd       String?        @unique
+  urlSd       String?        @unique
   author      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
   userId      String
@@ -149,4 +150,3 @@ model Subscriber {
   oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
-
