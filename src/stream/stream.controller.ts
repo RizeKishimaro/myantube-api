@@ -53,11 +53,10 @@ export class StreamController {
 
     try {
       const videoResponse = await axios.get(videoUrl,{
-        responseType: "blob"
+        responseType: "stream"
       });
 
       const headers = {
-        'Content-Range': videoResponse.headers['content-range'],
         'Accept-Ranges': 'bytes',
         'Content-Length': videoResponse.headers['content-length'],
         'Content-Type': 'video/mp4',
