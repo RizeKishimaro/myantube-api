@@ -81,4 +81,5 @@ export class StreamController {
     console.error('Error streaming video:', error);
     response.status(500).send('Error streaming video');
   }
+  }
 }
