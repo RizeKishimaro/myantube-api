@@ -124,9 +124,9 @@ model Video {
   id          Int            @id @default(autoincrement())
   title       String
   description String?
-  poster      String?        @db.VarChar(5000)
-  urlHd       String?        @unique @db.VarChar(5000)
-  urlSd       String?        @unique @db.VarChar(5000)
+  poster      String?        @db.LongText()
+  urlHd       String?        @db.LongText()
+  urlSd       String?        @db.LongText()
   author      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
   userId      String
