@@ -52,7 +52,9 @@ export class StreamController {
     const videoUrl = query.urlHd || query.urlSd 
 
     try {
-      const videoResponse = await axios.get(videoUrl);
+      const videoResponse = await axios.get(videoUrl,{
+        responseType: "blob"
+      });
 
       const headers = {
         'Content-Range': videoResponse.headers['content-range'],
@@ -65,7 +67,7 @@ export class StreamController {
 
       videoResponse.data.pipe(response);
     } catch (error) {
-      console.error('Error streaming video:', error.message);
+      console.error('Error streaming video:', error);
       response.status(500).send('Error streaming video');
     }
   }
