@@ -150,3 +150,4 @@ model Subscriber {
   oauthSubscriber   OauthUser? @relation("oauthSubscriber", fields: [oauthSubscriberId], references: [id])
   oauthChannel      OauthUser? @relation("oauthChannel", fields: [oauthChannelId], references: [id])
 }
+
