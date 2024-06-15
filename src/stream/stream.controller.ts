@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  ParseIntPipe,
   Query,
   Req,
   Res,
@@ -23,7 +24,7 @@ export class StreamController {
   async startStream(
     @Req() request: any,
     @Res() response: any,
-    @Query("video") id: number,
+    @Query("video", ParseIntPipe) id: number,
   ) {
     const range = request.headers.range || "1";
   if (!range) {
