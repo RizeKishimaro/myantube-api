@@ -9,6 +9,7 @@ import { VideoModule } from "./video/video.module";
 import { PrismaModule } from "./utils/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
+import { FactoryService } from './factory/factory.service';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { ThrottlerModule } from "@nestjs/throttler";
     VideoModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FactoryService],
 })
 export class AppModule {}

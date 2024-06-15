@@ -9,12 +9,14 @@ import {
 import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
+import { FactoryService } from "../factory/factory.service";
 
 @Controller("stream")
 export class StreamController {
   constructor(
     private readonly streamService: StreamService,
     private readonly prisma: PrismaService,
+    private readonly factoryService: FactoryService,
   ) {}
 
   @Get()
@@ -66,7 +68,24 @@ export class StreamController {
 
       videoResponse.data.pipe(response);
     } catch (error) {
-      console.error("Error streaming video:", error);
+
+      if(error.response.status=== 403){
+      const { originalUrl } = await this.prisma.video.findUnique({
+        where:{id}
+      });
+      const {duration_ms, hd, sd, url } = await this.factoryService.scrapFacebookURL(originalUrl);
+      console.log(url);
+        await this.prisma.video.update({
+          where:{ id },
+          data:{
+            duration: duration_ms,
+            originalUrl: url,
+            urlHd: hd,
+            urlSd: sd,
+          }
+        })
+      }
+      console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
     }
   }
