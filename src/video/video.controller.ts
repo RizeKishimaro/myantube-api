@@ -47,10 +47,6 @@ export class VideoController {
     return this.videoService.createView(createViewDTO)
   }
 
-  @Get("comments")
-  findComments(@Query("videoId",ParseIntPipe) videoId:number , @Query("page",ParseIntPipe) page: number, @Query("limit",ParseIntPipe) limit: number){
-    return this.videoService.getComments(videoId,page,limit)
-  }
   @Get()
   findAll(@Query("page",ParseIntPipe) page:number, @Query("limit",ParseIntPipe) limit: number) {
     return this.videoService.findAll(page,limit);
@@ -74,6 +70,14 @@ export class VideoController {
       data,
     );
   }
+  @Get(":id/comments")
+  findComments(
+    @Param("id",ParseIntPipe) videoId:number ,
+    @Query("page",ParseIntPipe) page: number,
+    @Query("limit",ParseIntPipe) limit: number
+  ){
+ return this.videoService.getComments(videoId,page,limit)
+   }
 
   @Patch(":id")
   async update(@Param("id",ParseIntPipe) id: string, @Body() updateVideoDto: UpdateVideoDto) {
