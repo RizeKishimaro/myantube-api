@@ -9,7 +9,7 @@ import { VideoModule } from "./video/video.module";
 import { PrismaModule } from "./utils/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { FactoryService } from './factory/factory.service';
+import { FactoryService } from "./factory/factory.service";
 
 @Module({
   imports: [

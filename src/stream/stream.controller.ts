@@ -68,22 +68,22 @@ export class StreamController {
 
       videoResponse.data.pipe(response);
     } catch (error) {
-
-      if(error.response.status=== 403){
-      const { originalUrl } = await this.prisma.video.findUnique({
-        where:{id}
-      });
-      const {duration_ms, hd, sd, url } = await this.factoryService.scrapFacebookURL(originalUrl);
-      console.log(url);
+      if (error.response.status === 403) {
+        const { originalUrl } = await this.prisma.video.findUnique({
+          where: { id },
+        });
+        const { duration_ms, hd, sd, url } =
+          await this.factoryService.scrapFacebookURL(originalUrl);
+        console.log(url);
         await this.prisma.video.update({
-          where:{ id },
-          data:{
+          where: { id },
+          data: {
             duration: duration_ms,
             originalUrl: url,
             urlHd: hd,
             urlSd: sd,
-          }
-        })
+          },
+        });
       }
       console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
