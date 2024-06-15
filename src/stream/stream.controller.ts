@@ -6,7 +6,7 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
-import axios from 'axios';
+import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
 
@@ -23,11 +23,11 @@ export class StreamController {
     @Res() response: any,
     @Query("video") id: number,
   ) {
-    const range = request.headers.range ?? '0';
+    const range = request.headers.range ?? "0";
     if (!range) {
       throw new BadRequestException({
         code: 299,
-        message: 'Bad range header or does not exist.',
+        message: "Bad range header or does not exist.",
       });
     }
 
@@ -45,29 +45,29 @@ export class StreamController {
     if (!query) {
       throw new BadRequestException({
         code: 404,
-        message: 'Video not found.',
+        message: "Video not found.",
       });
     }
 
-    const videoUrl = query.urlHd || query.urlSd 
+    const videoUrl = query.urlHd || query.urlSd;
 
     try {
-      const videoResponse = await axios.get(videoUrl,{
-        responseType: "stream"
+      const videoResponse = await axios.get(videoUrl, {
+        responseType: "stream",
       });
 
       const headers = {
-        'Accept-Ranges': 'bytes',
-        'Content-Length': videoResponse.headers['content-length'],
-        'Content-Type': 'video/mp4',
+        "Accept-Ranges": "bytes",
+        "Content-Length": videoResponse.headers["content-length"],
+        "Content-Type": "video/mp4",
       };
 
       response.writeHead(206, headers);
 
       videoResponse.data.pipe(response);
     } catch (error) {
-      console.error('Error streaming video:', error);
-      response.status(500).send('Error streaming video');
+      console.error("Error streaming video:", error);
+      response.status(500).send("Error streaming video");
     }
   }
 }

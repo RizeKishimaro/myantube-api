@@ -15,18 +15,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-    private readonly cryptoService: CryptoService
+    private readonly cryptoService: CryptoService,
   ) {}
   async createOauthAccount(createAuthDto: CreateAuthDto) {
     const user = await this.prisma.oauthUser.create({
       data: createAuthDto,
-      select:{
-        id:true
-      }
+      select: {
+        id: true,
+      },
     });
-    const encryptedId = this.cryptoService.encrypt(user.id)
+    const encryptedId = this.cryptoService.encrypt(user.id);
     const token = await this.jwtService.signAsync(
-      { pass: true, uid:  encryptedId},
+      { pass: true, uid: encryptedId },
       { secret: this.configService.get("JWT_SECRET") },
     );
     return {

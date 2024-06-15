@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query
+  Query,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
 import { CreateVideoDto } from "./dto/create-video.dto";
@@ -25,12 +25,12 @@ export class VideoController {
   ) {}
 
   @Post("createComment")
-  createComment(@Body() createCommentDTO: CreateCommentDTO){
-    console.log(createCommentDTO)
+  createComment(@Body() createCommentDTO: CreateCommentDTO) {
+    console.log(createCommentDTO);
     return this.videoService.createComment(createCommentDTO);
   }
   @Post("createLike")
-  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO){
+  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO) {
     return this.videoService.addOrRemoveLike(createLikeDTO);
   }
   @Post()
@@ -38,18 +38,21 @@ export class VideoController {
     return this.videoService.create(createVideoDto);
   }
   @Post("createDislike")
-  addOrRemoveDislike(@Body() createLikeDTO: CreateLikeDTO){
+  addOrRemoveDislike(@Body() createLikeDTO: CreateLikeDTO) {
     return this.videoService.addOrRemoveDislike(createLikeDTO);
   }
 
   @Post("addView")
-  createView(@Body() createViewDTO:CreateViewDTO){
-    return this.videoService.createView(createViewDTO)
+  createView(@Body() createViewDTO: CreateViewDTO) {
+    return this.videoService.createView(createViewDTO);
   }
 
   @Get()
-  findAll(@Query("page",ParseIntPipe) page:number, @Query("limit",ParseIntPipe) limit: number) {
-    return this.videoService.findAll(page,limit);
+  findAll(
+    @Query("page", ParseIntPipe) page: number,
+    @Query("limit", ParseIntPipe) limit: number,
+  ) {
+    return this.videoService.findAll(page, limit);
   }
   @Get("seed")
   async seedVideo() {
@@ -57,12 +60,12 @@ export class VideoController {
     return "Success!";
   }
   @Get("search")
-  async searchVideos(@Query("q") text:string){
+  async searchVideos(@Query("q") text: string) {
     const videos = this.videoService.searchVideos(text);
     return videos;
   }
   @Get(":id")
-  async findOne(@Param("id",ParseIntPipe) id: number) {
+  async findOne(@Param("id", ParseIntPipe) id: number) {
     const data = await this.videoService.findOne(+id);
     return this.responseHelper.sendSuccessMessage(
       "Successfully Searched",
@@ -72,20 +75,23 @@ export class VideoController {
   }
   @Get(":id/comments")
   findComments(
-    @Param("id",ParseIntPipe) videoId:number ,
-    @Query("page",ParseIntPipe) page: number,
-    @Query("limit",ParseIntPipe) limit: number
-  ){
- return this.videoService.getComments(videoId,page,limit)
-   }
+    @Param("id", ParseIntPipe) videoId: number,
+    @Query("page", ParseIntPipe) page: number,
+    @Query("limit", ParseIntPipe) limit: number,
+  ) {
+    return this.videoService.getComments(videoId, page, limit);
+  }
 
   @Patch(":id")
-  async update(@Param("id",ParseIntPipe) id: string, @Body() updateVideoDto: UpdateVideoDto) {
+  async update(
+    @Param("id", ParseIntPipe) id: string,
+    @Body() updateVideoDto: UpdateVideoDto,
+  ) {
     return await this.videoService.update(+id, updateVideoDto);
   }
 
   @Delete(":id")
-  remove(@Param("id",ParseIntPipe) id: number) {
+  remove(@Param("id", ParseIntPipe) id: number) {
     return this.videoService.remove(+id);
   }
 }
