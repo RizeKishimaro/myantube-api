@@ -43,30 +43,40 @@ export class StreamController {
     },
   });
 
-   if (!query) {
-      throw new BadRequestException({
-        code: 404,
-        message: "Video not found.",
-      });
-    }
+  if (!query) {
+    throw new BadRequestException({
+      code: 404,
+      message: 'Video not found.',
+    });
+  }
 
-    const videoUrl = query.urlHd || query.urlSd;
+  const videoUrl = query.urlHd || query.urlSd;
 
-    try {
-      const videoResponse = await axios.get(videoUrl, {
-        responseType: "stream",
-      });
+  try {
+    // Get video metadata to determine its size
+    const headResponse = await axios.head(videoUrl);
+    const videoSize = headResponse.headers['content-length'];
+    const videoType = headResponse.headers['content-type'] || 'video/mp4';
 
-      const headers = {
-        "Accept-Ranges": "bytes",
-        "Content-Length": videoResponse.headers["content-length"],
-        "Content-Type": "video/mp4",
-      };
+    const CHUNK_SIZE = 10 ** 6; // 1MB
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
 
-      response.writeHead(206, headers);
+    const headers = {
+      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': end - start + 1,
+      'Content-Type': videoType,
+    };
 
-      videoResponse.data.pipe(response);
-    } catch (error) {
+    const videoResponse = await axios.get(videoUrl, {
+      responseType: 'stream',
+      headers: {
+        Range: `bytes=${start}-${end}`,
+      },
+    });
+
+       } catch (error) {
       if (error.response.status === 403) {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
