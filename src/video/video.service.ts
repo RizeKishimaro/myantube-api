@@ -25,7 +25,8 @@ async searchVideos(searchString: string){
     })
     return videos;
   }
-  async findAll() {
+  async findAll(page=0,limit=10) {
+    const skip = page * limit;
       const data = await this.prismaService.video.findMany({
         include: {
           _count:{
@@ -50,6 +51,8 @@ async searchVideos(searchString: string){
             },
           },
         },
+      skip,
+      take: limit,
       })
     const videoData = data.map(({title,poster,author,oauthAuthor,_count,urlHd,urlSd,id,description})=>{
       return {
@@ -115,6 +118,10 @@ async searchVideos(searchString: string){
           },
         },
         comments: {
+          take: 1,
+            orderBy: {
+            id: "desc"
+            },
           include: {
             author: {
               select: {
@@ -249,6 +256,46 @@ async searchVideos(searchString: string){
         videoId: createViewDTO.videoId,
       }
     })
+  }
+  async getComments(videoId:number,page=0,limit=5){
+    const skip = page* limit;
+    const comments = await this.prismaService.comment.findMany({
+      where:{
+        videoId,
+      },
+      orderBy:{
+        id: "desc"
+      },
+      include:{
+       author:{
+          select:{
+            id: true,
+            name: true,
+            picture: true,
+          }
+        },
+      oauthAuthor:{
+          select:{
+            id: true,
+            name: true,
+            picture: true,
+          }
+        }
+      },
+      take: limit,
+      skip
+    });
+    const mappedComments = comments.map((comment)=>{
+      return {
+        id: comment.id,
+        text: comment.content,
+        by: comment.author.name || comment.oauthAuthor.name,
+        author_id: comment.author.id || comment.oauthAuthor.id,
+        author_profile: comment.author.picture || comment.oauthAuthor.picture,
+        createdAt: comment.createdAt
+      }
+    })
+    return mappedComments;
   }
   async seedVideos(){
     // Create some users

@@ -46,9 +46,14 @@ export class VideoController {
   createView(@Body() createViewDTO:CreateViewDTO){
     return this.videoService.createView(createViewDTO)
   }
+
+  @Get("comments")
+  findComments(@Query("videoId",ParseIntPipe) videoId:number , @Query("page",ParseIntPipe) page: number, @Query("limit",ParseIntPipe) limit: number){
+    return this.videoService.getComments(videoId,page,limit)
+  }
   @Get()
-  findAll() {
-    return this.videoService.findAll();
+  findAll(@Query("page",ParseIntPipe) page:number, @Query("limit",ParseIntPipe) limit: number) {
+    return this.videoService.findAll(page,limit);
   }
   @Get("seed")
   async seedVideo() {
