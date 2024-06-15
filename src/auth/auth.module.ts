@@ -19,7 +19,7 @@ import { CryptoService } from "../../lib/aes.lib";
     EmailService,
     ResponseHelper,
     GoogleStrategy,
-    CryptoService
+    CryptoService,
   ],
 })
 export class AuthModule {}

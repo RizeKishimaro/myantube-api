@@ -1,4 +1,4 @@
- export class CreateViewDTO{
-   userId: string
-   videoId: number
- } 
+export class CreateViewDTO {
+  userId: string;
+  videoId: number;
+}

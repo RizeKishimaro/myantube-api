@@ -124,11 +124,13 @@ model Video {
   id          Int            @id @default(autoincrement())
   title       String
   description String?
-  poster      String?        @db.Text // Changed to Text
-  urlHd       String?        @db.Text // Changed to Text
-  urlSd       String?        @db.Text // Changed to Text
-  urlHdHash   String?        @unique // Add hash field
-  urlSdHash   String?        @unique // Add hash field
+  originalUrl String
+  duration    Int            @db.Int
+  poster      String?        @db.Text
+  urlHd       String?        @db.Text
+  urlSd       String?        @db.Text
+  urlHdHash   String?        @unique
+  urlSdHash   String?        @unique
   author      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   oauthAuthor OauthUser?     @relation(fields: [oauthUserId], references: [id], onDelete: Cascade)
   userId      String

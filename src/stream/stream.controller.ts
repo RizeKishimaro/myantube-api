@@ -6,15 +6,17 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
-import axios from 'axios';
+import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
+import { FactoryService } from "../factory/factory.service";
 
 @Controller("stream")
 export class StreamController {
   constructor(
     private readonly streamService: StreamService,
     private readonly prisma: PrismaService,
+    private readonly factoryService: FactoryService,
   ) {}
 
   @Get()
@@ -23,6 +25,7 @@ export class StreamController {
     @Res() response: any,
     @Query("video") id: number,
   ) {
+<<<<<<< HEAD
     const range = request.headers.range || "1";
   if (!range) {
     throw new BadRequestException({
@@ -30,6 +33,15 @@ export class StreamController {
       message: 'Bad range header or does not exist.',
     });
   }
+=======
+    const range = request.headers.range ?? "0";
+    if (!range) {
+      throw new BadRequestException({
+        code: 299,
+        message: "Bad range header or does not exist.",
+      });
+    }
+>>>>>>> develop
 
   // Fetch the video URL from the database
   const query = await this.prisma.video.findFirst({
@@ -75,11 +87,58 @@ export class StreamController {
       },
     });
 
+<<<<<<< HEAD
     response.writeHead(206, headers);
     videoResponse.data.pipe(response);
   } catch (error) {
     console.error('Error streaming video:', error);
     response.status(500).send('Error streaming video');
   }
+=======
+    if (!query) {
+      throw new BadRequestException({
+        code: 404,
+        message: "Video not found.",
+      });
+    }
+
+    const videoUrl = query.urlHd || query.urlSd;
+
+    try {
+      const videoResponse = await axios.get(videoUrl, {
+        responseType: "stream",
+      });
+
+      const headers = {
+        "Accept-Ranges": "bytes",
+        "Content-Length": videoResponse.headers["content-length"],
+        "Content-Type": "video/mp4",
+      };
+
+      response.writeHead(206, headers);
+
+      videoResponse.data.pipe(response);
+    } catch (error) {
+      if (error.response.status === 403) {
+        const { originalUrl } = await this.prisma.video.findUnique({
+          where: { id },
+        });
+        const { duration_ms, hd, sd, url } =
+          await this.factoryService.scrapFacebookURL(originalUrl);
+        console.log(url);
+        await this.prisma.video.update({
+          where: { id },
+          data: {
+            duration: duration_ms,
+            originalUrl: url,
+            urlHd: hd,
+            urlSd: sd,
+          },
+        });
+      }
+      console.error("Error streaming video:", error.response);
+      response.status(500).send("Error streaming video");
+    }
+>>>>>>> develop
   }
 }

@@ -1,5 +1,5 @@
- export class CreateCommentDTO{
-   userId: string
-   videoId: number
-   content: string
- }
+export class CreateCommentDTO {
+  userId: string;
+  videoId: number;
+  content: string;
+}
