@@ -84,16 +84,16 @@ export class StreamController {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
-        const { duration_ms, hd, sd, url } =
+        const urlData =
           await this.factoryService.scrapFacebookURL(originalUrl);
         console.log(url);
         await this.prisma.video.update({
           where: { id },
           data: {
-            duration: duration_ms,
-            originalUrl: url,
-            urlHd: hd,
-            urlSd: sd,
+            duration: urlData.duration_ms,
+            originalUrl: urlData.url,
+            urlHd: urlData.hd,
+            urlSd: urlData.sd,
           },
         });
       }
