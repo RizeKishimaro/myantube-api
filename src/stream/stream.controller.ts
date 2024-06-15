@@ -23,7 +23,7 @@ export class StreamController {
     @Res() response: any,
     @Query("video") id: number,
   ) {
-    const range = request.headers.range || 1;
+    const range = request.headers.range || "1";
   if (!range) {
     throw new BadRequestException({
       code: 299,
