@@ -9,13 +9,20 @@ import {
 import axios from 'axios';
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
+import { DoHResolver } from 'dohjs';
 
 @Controller("stream")
 export class StreamController {
+  private dohResolver: DoHResolver;
+
   constructor(
     private readonly streamService: StreamService,
     private readonly prisma: PrismaService,
-  ) {}
+  ) {
+    this.dohResolver = new DoHResolver({
+      baseUrl: 'https://cloudflare-dns.com/dns-query', // Cloudflare DoH endpoint
+    });
+  }
 
   @Get()
   async startStream(
@@ -49,25 +56,50 @@ export class StreamController {
       });
     }
 
-    const videoUrl = query.urlHd || query.urlSd 
+    const videoUrl = query.urlHd || query.urlSd;
 
     try {
-      const videoResponse = await axios.get(videoUrl,{
-        responseType: "stream"
+      // Resolve the hostname using DoH
+      const url = new URL(videoUrl);
+      const resolvedIp = await this.resolveHostname(url.hostname);
+      const resolvedUrl = `${url.protocol}//${resolvedIp}${url.pathname}${url.search}`;
+
+      // Stream the video
+      const videoResponse = await axios.get(resolvedUrl, {
+        responseType: "stream",
+        headers: {
+          'Range': range,
+        },
       });
 
+      const total = videoResponse.headers['content-length'];
+      const contentRange = videoResponse.headers['content-range'];
+
       const headers = {
+        'Content-Range': contentRange,
         'Accept-Ranges': 'bytes',
-        'Content-Length': videoResponse.headers['content-length'],
+        'Content-Length': total,
         'Content-Type': 'video/mp4',
       };
 
       response.writeHead(206, headers);
-
       videoResponse.data.pipe(response);
     } catch (error) {
       console.error('Error streaming video:', error);
       response.status(500).send('Error streaming video');
+    }
+  }
+
+  private async resolveHostname(hostname: string): Promise<string> {
+    try {
+      const result = await this.dohResolver.query(hostname, 'A');
+      if (result.answers.length > 0) {
+        return result.answers[0].data;
+      }
+      throw new Error('No DNS records found');
+    } catch (error) {
+      console.error('Error resolving DNS:', error);
+      throw new Error('DNS resolution failed');
     }
   }
 }
