@@ -86,7 +86,6 @@ export class StreamController {
         });
         const urlData =
           await this.factoryService.scrapFacebookURL(originalUrl);
-        console.log(url);
         await this.prisma.video.update({
           where: { id },
           data: {
