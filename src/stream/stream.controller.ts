@@ -25,7 +25,6 @@ export class StreamController {
     @Res() response: any,
     @Query("video") id: number,
   ) {
-<<<<<<< HEAD
     const range = request.headers.range || "1";
   if (!range) {
     throw new BadRequestException({
@@ -33,16 +32,6 @@ export class StreamController {
       message: 'Bad range header or does not exist.',
     });
   }
-=======
-    const range = request.headers.range ?? "0";
-    if (!range) {
-      throw new BadRequestException({
-        code: 299,
-        message: "Bad range header or does not exist.",
-      });
-    }
->>>>>>> develop
-
   // Fetch the video URL from the database
   const query = await this.prisma.video.findFirst({
     where: {
@@ -54,48 +43,7 @@ export class StreamController {
     },
   });
 
-  if (!query) {
-    throw new BadRequestException({
-      code: 404,
-      message: 'Video not found.',
-    });
-  }
-
-  const videoUrl = query.urlHd || query.urlSd;
-
-  try {
-    // Get video metadata to determine its size
-    const headResponse = await axios.head(videoUrl);
-    const videoSize = headResponse.headers['content-length'];
-    const videoType = headResponse.headers['content-type'] || 'video/mp4';
-
-    const CHUNK_SIZE = 10 ** 6; // 1MB
-    const start = Number(range.replace(/\D/g, ""));
-    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-    const headers = {
-      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': end - start + 1,
-      'Content-Type': videoType,
-    };
-
-    const videoResponse = await axios.get(videoUrl, {
-      responseType: 'stream',
-      headers: {
-        Range: `bytes=${start}-${end}`,
-      },
-    });
-
-<<<<<<< HEAD
-    response.writeHead(206, headers);
-    videoResponse.data.pipe(response);
-  } catch (error) {
-    console.error('Error streaming video:', error);
-    response.status(500).send('Error streaming video');
-  }
-=======
-    if (!query) {
+   if (!query) {
       throw new BadRequestException({
         code: 404,
         message: "Video not found.",
@@ -139,6 +87,5 @@ export class StreamController {
       console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
     }
->>>>>>> develop
   }
 }
