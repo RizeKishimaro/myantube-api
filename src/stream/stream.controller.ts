@@ -5,7 +5,6 @@ import {
   Query,
   Req,
   Res,
-  ParseIntPipe
 } from "@nestjs/common";
 import axios from "axios";
 import { StreamService } from "./stream.service";
@@ -24,7 +23,7 @@ export class StreamController {
   async startStream(
     @Req() request: any,
     @Res() response: any,
-    @Query("video",ParseIntPipe) id: number,
+    @Query("video") id: number,
   ) {
     const range = request.headers.range || "1";
   if (!range) {
@@ -77,21 +76,24 @@ export class StreamController {
       },
     });
 
-       } catch (error) {
+    response.writeHead(206, headers);
+    videoResponse.data.pipe(response);
+  
+   } catch (error) {
       if (error.response.status === 403) {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
-        const urlData =
+        const { duration_ms, hd, sd, url } =
           await this.factoryService.scrapFacebookURL(originalUrl);
-        console.log(urlData);
+        console.log(url);
         await this.prisma.video.update({
           where: { id },
           data: {
-            duration: urlData.duration_ms,
-            originalUrl: urlData.url,
-            urlHd: urlData.hd,
-            urlSd: urlData.sd,
+            duration: duration_ms,
+            originalUrl: url,
+            urlHd: hd,
+            urlSd: sd,
           },
         });
       }
