@@ -95,30 +95,41 @@ export class UserService {
   }
   async resendActivationCode(email: string, hostUrl: string,ip: string) {
     try {
-      const todayDate= new Date().toISOString().split('T')[0];
-      const reqCount= await this.prisma.activationCode.count({
-        where:{ ip , createdAt: todayDate},
-      })
-      if(reqCount >2){
-        throw new BadRequestException("You have exceeded limit to access activation code.");
-      }
-      const user = await this.prisma.user.findFirst({ where: { email } });
-      if (!user) {
-        throw new BadRequestException("There Is No Such User with that email");
-      } else if (user.isActive) {
-        throw new HttpException("The account is Already Activated", 409);
-      }
-      const code = await this.prisma.activationCode.findFirst({
-        where: {
-          expiresAt: {
-            gte: new Date().toISOString(),
-          },
-          user: {
-            email,
-          },
-        },
-        include: { user: true },
-      });
+      const todayDate = new Date();
+const startOfDay = new Date(todayDate.setHours(0, 0, 0, 0)).toISOString();
+const endOfDay = new Date(todayDate.setHours(23, 59, 59, 999)).toISOString();
+
+const reqCount = await this.prisma.activationCode.count({
+  where: {
+    createdAt: {
+      gte: startOfDay,
+      lt: endOfDay
+    }
+  }
+});
+
+if (reqCount > 2) {
+  throw new BadRequestException("You have exceeded limit to access activation code");
+}
+
+const user = await this.prisma.user.findFirst({ where: { email } });
+if (!user) {
+  throw new BadRequestException("There is no such user with that email");
+} else if (user.isActive) {
+  throw new HttpException("The account is already activated", 409);
+}
+
+const code = await this.prisma.activationCode.findFirst({
+  where: {
+    expiresAt: {
+      gte: new Date().toISOString(),
+    },
+    user: {
+      email,
+    }
+  },
+  include: { user: true }
+});
         const activationCode = randomUUID();
         const timeLimit = new Date(
           new Date().setHours(new Date().getHours() + 3),
