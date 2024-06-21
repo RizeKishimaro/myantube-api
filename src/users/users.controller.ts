@@ -37,7 +37,7 @@ export class UserController {
 
   @UseGuards(ThrottlerGuard)
   @Post("regenerate-code")
-  async generateActivationCode(@Req() req: Request,@Body() body: string) {
+  async generateActivationCode(@Req() req: Request,@Body() body) {
     const hosturl = req.protocol + "://" + req.get("host");
     const ip = req.ip;
     return await this.userService.resendActivationCode(body.email, hosturl,ip);
