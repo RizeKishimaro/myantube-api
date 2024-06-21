@@ -1,4 +1,4 @@
-// user/user.controller.ts
+/  user/user.controller.ts
 import {
   Controller,
   Post,
@@ -37,10 +37,10 @@ export class UserController {
 
   @UseGuards(ThrottlerGuard)
   @Post("regenerate-code")
-  async generateActivationCode(@Req() req: Request, email: string) {
+  async generateActivationCode(@Req() req: Request,@Body() body: string) {
     const hosturl = req.protocol + "://" + req.get("host");
     const ip = req.ip;
-    return await this.userService.resendActivationCode(email, hosturl,ip);
+    return await this.userService.resendActivationCode(body.email, hosturl,ip);
   }
   @Post("login")
   async verifyUser(@Req() req: Request, @Body() body: UserAuthDTO) {
