@@ -29,7 +29,7 @@ import { FactoryService } from "./factory/factory.service";
     }),
     ThrottlerModule.forRoot([
       {
-        ttl: 180000,
+        ttl: 60000  ,
         limit: 1,
       },
     ]),
