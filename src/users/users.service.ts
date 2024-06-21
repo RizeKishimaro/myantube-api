@@ -142,6 +142,7 @@ export class UserService {
         200,
       );
     } catch (error) {
+      console.error(error)
       throw new InternalServerErrorException({
         message: "Woops!We're Shorry there is Something unexcepted happened.",
         emoji: ":3",
