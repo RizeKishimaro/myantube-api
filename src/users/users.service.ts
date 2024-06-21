@@ -115,7 +115,8 @@ if (reqCount > 2) {
 const user = await this.prisma.user.findFirst({ where: { email } });
 if (!user) {
   throw new BadRequestException("There is no such user with that email");
-} else if (user.isActive) {
+}
+if (user.isActive) {
   throw new HttpException("The account is already activated", 409);
 }
 
