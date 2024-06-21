@@ -113,6 +113,7 @@ if (reqCount > 2) {
 }
 
 const user = await this.prisma.user.findFirst({ where: { email } });
+      console.log(user)
 if (!user) {
   throw new BadRequestException("There is no such user with that email");
 }
@@ -120,7 +121,7 @@ if (user.isActive) {
   throw new HttpException("The account is already activated", 409);
 }
 
-const code = await this.prisma.activationCode.findFirst({
+ await this.prisma.activationCode.findFirst({
   where: {
     expiresAt: {
       gte: new Date().toISOString(),
@@ -155,10 +156,9 @@ const code = await this.prisma.activationCode.findFirst({
       );
     } catch (error) {
       console.error(error)
-      throw new InternalServerErrorException({
-        message: "Woops!We're Shorry there is Something unexcepted happened.",
-        emoji: ":3",
-      });
+      throw new HttpException({
+        message: error.resoponse || "Woops!We're Shorry there is Something unexcepted happened.",
+      },error.status || 500);
     }
   }
 }
