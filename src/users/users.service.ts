@@ -81,17 +81,27 @@ export class UserService {
       throw new BadRequestException("Invalid or expired activation code.");
     }
 
-    await this.prisma.user.update({
+    const {id}= await this.prisma.user.update({
       where: { id: activationCode.userId },
       data: { isActive: true },
+      select:{
+        id: true,
+      }
     });
 
     await this.prisma.activationCode.delete({
-      where: { id: activationCode.id },
+      where: { userId: id },
     });
   }
-  async resendActivationCode(email: string, hostUrl: string) {
+  async resendActivationCode(email: string, hostUrl: string,ip: string) {
     try {
+      const todayDate= new Date().toISOString().split('T')[0];
+      const reqCount= await this.prisma.activationCode.count({
+        where:{ ip , createdAt: todayDate},
+      })
+      if(reqCount >2){
+        throw new BadRequestException("You have exceeded limit to access activation code.");
+      }
       const user = await this.prisma.user.findFirst({ where: { email } });
       if (!user) {
         throw new BadRequestException("There Is No Such User with that email");
@@ -109,32 +119,24 @@ export class UserService {
         },
         include: { user: true },
       });
-      if (!code) {
         const activationCode = randomUUID();
         const timeLimit = new Date(
           new Date().setHours(new Date().getHours() + 3),
         ).toISOString();
         await this.prisma.activationCode.create({
           data: {
+            ip,
             code: activationCode,
             expiresAt: timeLimit,
             userId: user.id,
           },
         });
-        await this.emailService.sendEmail(
-          email,
-          "Activate Your Account",
-          activationCode,
-          hostUrl,
-        );
-      } else {
-        await this.emailService.sendEmail(
-          user.email,
-          "Activate Your Account",
-          code.code,
-          hostUrl,
-        );
-      }
+       // await this.emailService.sendEmail(
+         // email,
+          //"Activate Your Account",
+          //activationCode,
+          //hostUrl,
+        //);
       return this.responseHelper.sendSuccessMessage(
         "Email Has being resent Please check the information",
         200,

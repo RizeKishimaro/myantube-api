@@ -6,11 +6,16 @@ import { join } from "path";
 import { CreateLikeDTO } from "./dto/create-like.dto";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
 import { CreateViewDTO } from "./dto/create-view.dto";
+import { FactoryService } from "../factory/factory.service";
 
 @Injectable()
 export class VideoService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly factoryService: FactoryService
+  ) {}
   async create(createVideoDto: CreateVideoDto) {
+    const urlData = this.factoryService.scrapFacebookURL(createVideoDto.url)
     await this.prismaService.video.create({
       data: createVideoDto,
     });

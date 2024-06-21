@@ -39,7 +39,8 @@ export class UserController {
   @Post("regenerate-code")
   async generateActivationCode(@Req() req: Request, email: string) {
     const hosturl = req.protocol + "://" + req.get("host");
-    return await this.userService.resendActivationCode(email, hosturl);
+    const ip = req.ip;
+    return await this.userService.resendActivationCode(email, hosturl,ip);
   }
   @Post("login")
   async verifyUser(@Req() req: Request, @Body() body: UserAuthDTO) {

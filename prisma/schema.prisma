@@ -49,10 +49,12 @@ model User {
 
 model ActivationCode {
   id        Int       @id @unique @default(autoincrement())
+  ip        String?
   code      String    @unique
   expiresAt DateTime?
   user      User      @relation(fields: [userId], references: [id])
   userId    String    @unique
+  createdAt DateTime  @default(now())
 }
 
 model Comment {
