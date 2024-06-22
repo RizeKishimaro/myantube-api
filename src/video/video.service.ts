@@ -15,14 +15,27 @@ export class VideoService {
     private readonly factoryService: FactoryService
   ) {}
   async create(createVideoDto: CreateVideoDto) {
-    const urlData = this.factoryService.scrapFacebookURL(createVideoDto.url)
+    const {title,description,userId} = createVideoDto;
+    const urlData = await this.factoryService.scrapFacebookURL(createVideoDto.url)
+    const {id} = await this.prismaService.user.findUnique({
+      where: {id: userId},
+      select:{ id: true}
+    })
     await this.prismaService.video.create({
-      data: createVideoDto,
+      data: { title,
+      description,
+      urlHd: urlData.hd,
+      urlSd: urlData.sd,
+      poster: urlData.thumbnail,
+      userId: id,
+        duration: urlData.duration_ms,
+        originalUrl: urlData.url
+      },
     });
   }
   async searchVideos(searchString: string) {
     const videos = await this.prismaService.video.findMany({
-      where: {
+     where: {
         title: {
           contains: searchString,
         },
