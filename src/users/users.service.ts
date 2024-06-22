@@ -89,7 +89,7 @@ export class UserService {
       }
     });
 
-    await this.prisma.activationCode.delete({
+    await this.prisma.activationCode.deleteMany({
       where: { userId: id },
     });
   }
