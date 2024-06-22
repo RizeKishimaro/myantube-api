@@ -8,7 +8,7 @@ datasource db {
 }
 
 model OauthUser {
-  id             String          @id @default(uuid())
+  id             String          @id @unique @default(uuid())
   email          String          @unique
   name           String?
   picture        String?
