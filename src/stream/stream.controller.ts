@@ -54,9 +54,8 @@ export class StreamController {
 
   try {
       try{
-      const thumbnailResponse = await axios.get(query.poster);
+      await axios.get(query.poster);
       }catch(error){
-if(error.response.status === 403){
  const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
@@ -73,7 +72,6 @@ if(error.response.status === 403){
           },
         });
 
-      }
       }
       
 
