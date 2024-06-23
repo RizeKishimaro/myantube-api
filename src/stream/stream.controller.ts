@@ -53,10 +53,29 @@ export class StreamController {
   const videoUrl = query.urlHd || query.urlSd;
 
   try {
+      try{
       const thumbnailResponse = await axios.get(query.poster);
-      if(thumbnailResponse.status === 403){
-        throw new Error("Image Url Signature Expired!")
+      }catch(error){
+if(error.response.status === 403){
+ const { originalUrl } = await this.prisma.video.findUnique({
+          where: { id },
+        });
+        const urlData =
+          await this.factoryService.scrapFacebookURL(originalUrl);
+        await this.prisma.video.update({
+          where: { id },
+          data: {
+            duration: urlData.duration_ms,
+            originalUrl: urlData.url,
+            urlHd: urlData.hd,
+            urlSd: urlData.sd,
+            poster: urlData.thumbnail
+          },
+        });
+
       }
+      }
+      
 
     // Get video metadata to determine its size
     const headResponse = await axios.head(videoUrl);
