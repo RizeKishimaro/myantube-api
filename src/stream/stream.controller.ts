@@ -94,6 +94,7 @@ export class StreamController {
             originalUrl: urlData.url,
             urlHd: urlData.hd,
             urlSd: urlData.sd,
+            poster: urlData.thumbnail
           },
         });
       }

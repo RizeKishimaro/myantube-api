@@ -176,7 +176,7 @@ export class VideoService {
     const responseData = {
       uploader: {
         name: oauthAuthor?.name || author?.name,
-        picture: oauthAuthor?.picture || author?.picture,
+        profile: oauthAuthor?.picture || author?.picture,
         id: oauthAuthor?.id || author?.id,
       },
       video: {
