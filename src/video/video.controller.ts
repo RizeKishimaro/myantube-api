@@ -23,30 +23,6 @@ export class VideoController {
     private readonly videoService: VideoService,
     private readonly responseHelper: ResponseHelper,
   ) {}
-
-  @Post("createComment")
-  createComment(@Body() createCommentDTO: CreateCommentDTO) {
-    console.log(createCommentDTO);
-    return this.videoService.createComment(createCommentDTO);
-  }
-  @Post("createLike")
-  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO) {
-    return this.videoService.addOrRemoveLike(createLikeDTO);
-  }
-  @Post()
-  create(@Body() createVideoDto: CreateVideoDto) {
-    return this.videoService.create(createVideoDto);
-  }
-  @Post("createDislike")
-  addOrRemoveDislike(@Body() createLikeDTO: CreateLikeDTO) {
-    return this.videoService.addOrRemoveDislike(createLikeDTO);
-  }
-
-  @Post("addView")
-  createView(@Body() createViewDTO: CreateViewDTO) {
-    return this.videoService.createView(createViewDTO);
-  }
-
   @Get()
   findAll(
     @Query("page", ParseIntPipe) page: number,
@@ -81,6 +57,30 @@ export class VideoController {
   ) {
     return this.videoService.getComments(videoId, page, limit);
   }
+
+  @Post("createComment")
+  createComment(@Body() createCommentDTO: CreateCommentDTO) {
+    console.log(createCommentDTO);
+    return this.videoService.createComment(createCommentDTO);
+  }
+  @Post("createLike")
+  addOrRemoveLike(@Body() createLikeDTO: CreateLikeDTO) {
+    return this.videoService.addOrRemoveLike(createLikeDTO);
+  }
+  @Post()
+  create(@Body() createVideoDto: CreateVideoDto) {
+    return this.videoService.create(createVideoDto);
+  }
+  @Post("createDislike")
+  addOrRemoveDislike(@Body() createLikeDTO: CreateLikeDTO) {
+    return this.videoService.addOrRemoveDislike(createLikeDTO);
+  }
+
+  @Post("addView")
+  createView(@Body() createViewDTO: CreateViewDTO) {
+    return this.videoService.createView(createViewDTO);
+  }
+
 
   @Patch(":id")
   async update(
