@@ -12,6 +12,7 @@ import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
 import { FactoryService } from "../factory/factory.service";
+import { exec } from "child_process";
 
 @Controller("stream")
 export class StreamController {
@@ -53,10 +54,7 @@ export class StreamController {
   const videoUrl = query.urlHd || query.urlSd;
 
   try {
-      const thumbnailResponse = await axios.get(query.poster);
-      if(thumbnailResponse.status === 403){
-        throw new Error("Image Url Signature Expired!")
-      }
+     await axios.get(query.poster);
 
     // Get video metadata to determine its size
     const headResponse = await axios.head(videoUrl);
@@ -90,9 +88,9 @@ export class StreamController {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
-        const urlData =
-          await this.factoryService.scrapFacebookURL(originalUrl);
-        await this.prisma.video.update({
+        const child = exec(`node index.js ${originalUrl}`,
+    async (error, urlData, stderr) => {
+ await this.prisma.video.update({
           where: { id },
           data: {
             duration: urlData.duration_ms,
@@ -102,7 +100,13 @@ export class StreamController {
             poster: urlData.thumbnail
           },
         });
-      }
+
+        if (error !== null) {
+            console.log(`exec error: ${error}`);
+        }
+});
+          
+             }
       console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
     }
