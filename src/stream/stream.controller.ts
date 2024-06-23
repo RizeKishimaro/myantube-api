@@ -85,6 +85,7 @@ export class StreamController {
     videoResponse.data.pipe(response);
   
    } catch (error) {
+      console.log(error)
       if (error.response.status === 403) {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
