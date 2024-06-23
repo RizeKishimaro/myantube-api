@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  NotFoundException,
   ParseIntPipe,
   Query,
   Req,
@@ -41,19 +42,22 @@ export class StreamController {
     select: {
       urlHd: true,
       urlSd: true,
+      poster: true,
     },
   });
 
   if (!query) {
-    throw new BadRequestException({
-      code: 404,
-      message: 'Video not found.',
-    });
+    throw new NotFoundException('Video not found.');
   }
 
   const videoUrl = query.urlHd || query.urlSd;
 
   try {
+      const thumbnailResponse = await axios.get(query.poster);
+      if(thumbnailResponse.status === 403){
+        throw new Error("Image Url Signature Expired!")
+      }
+
     // Get video metadata to determine its size
     const headResponse = await axios.head(videoUrl);
     const videoSize = headResponse.headers['content-length'];
