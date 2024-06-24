@@ -71,6 +71,12 @@ export class VideoService {
           },
         },
       },
+      select: {
+        id: true,
+        duration: true,
+        title: true,
+        poster: true,
+      },
       skip,
       take: limit,
     });
@@ -81,8 +87,7 @@ export class VideoService {
         author,
         oauthAuthor,
         _count,
-        urlHd,
-        urlSd,
+        duration,
         id,
         description,
       }) => {
@@ -95,9 +100,8 @@ export class VideoService {
           video: {
             id,
             title,
-            urlHd,
-            urlSd,
             description,
+            duration,
             poster,
             status: {
               likes: _count.likes,
