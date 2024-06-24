@@ -12,6 +12,7 @@ import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
 import { FactoryService } from "../factory/factory.service";
+import { exec } from "child_process";
 
 @Controller("stream")
 export class StreamController {
@@ -87,9 +88,9 @@ export class StreamController {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
-        const urlData =
-          await this.factoryService.scrapFacebookURL(originalUrl);
-        await this.prisma.video.update({
+        const child = exec(`node index.js ${originalUrl}`,
+    async (error, urlData: any , stderr) => {
+ await this.prisma.video.update({
           where: { id },
           data: {
             duration: urlData.duration_ms,
@@ -99,7 +100,13 @@ export class StreamController {
             poster: urlData.thumbnail
           },
         });
-      }
+
+        if (error !== null) {
+            console.log(`exec error: ${error}`);
+        }
+});
+          
+             }
       console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
     }

@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  Res,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
 import { CreateVideoDto } from "./dto/create-video.dto";
@@ -16,6 +17,7 @@ import { ResponseHelper } from "../utils/responseHelper.service";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
 import { CreateLikeDTO } from "./dto/create-like.dto";
 import { CreateViewDTO } from "./dto/create-view.dto";
+import { Response } from "express"
 
 @Controller("video")
 export class VideoController {
@@ -39,6 +41,10 @@ export class VideoController {
   async searchVideos(@Query("q") text: string) {
     const videos = this.videoService.searchVideos(text);
     return videos;
+  }
+  @Get("scrapImage")
+  async scrapImage(@Query("url") image: string,@Res() response:Response){
+    return this.videoService.streamImage(image,response)
   }
   @Get(":id")
   async findOne(@Param("id", ParseIntPipe) id: number) {
