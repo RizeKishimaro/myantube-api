@@ -26,6 +26,28 @@ let VideoController = class VideoController {
         this.videoService = videoService;
         this.responseHelper = responseHelper;
     }
+    findAll(page, limit) {
+        return this.videoService.findAll(page, limit);
+    }
+    async seedVideo() {
+        await this.videoService.seedVideos();
+        return "Success!";
+    }
+    async searchVideos(text) {
+        const videos = this.videoService.searchVideos(text);
+        return videos;
+    }
+    async scrapImage(image, response) {
+        const file = await this.videoService.fetchImage(image, response);
+        file.getStream().pipe(response);
+    }
+    async findOne(id) {
+        const data = await this.videoService.findOne(+id);
+        return this.responseHelper.sendSuccessMessage("Successfully Searched", 200, data);
+    }
+    findComments(videoId, page, limit) {
+        return this.videoService.getComments(videoId, page, limit);
+    }
     createComment(createCommentDTO) {
         console.log(createCommentDTO);
         return this.videoService.createComment(createCommentDTO);
@@ -42,24 +64,6 @@ let VideoController = class VideoController {
     createView(createViewDTO) {
         return this.videoService.createView(createViewDTO);
     }
-    findAll(page, limit) {
-        return this.videoService.findAll(page, limit);
-    }
-    async seedVideo() {
-        await this.videoService.seedVideos();
-        return "Success!";
-    }
-    async searchVideos(text) {
-        const videos = this.videoService.searchVideos(text);
-        return videos;
-    }
-    async findOne(id) {
-        const data = await this.videoService.findOne(+id);
-        return this.responseHelper.sendSuccessMessage("Successfully Searched", 200, data);
-    }
-    findComments(videoId, page, limit) {
-        return this.videoService.getComments(videoId, page, limit);
-    }
     async update(id, updateVideoDto) {
         return await this.videoService.update(+id, updateVideoDto);
     }
@@ -68,6 +72,51 @@ let VideoController = class VideoController {
     }
 };
 exports.VideoController = VideoController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("page", common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)("limit", common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", void 0)
+], VideoController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("seed"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], VideoController.prototype, "seedVideo", null);
+__decorate([
+    (0, common_1.Get)("search"),
+    __param(0, (0, common_1.Query)("q")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], VideoController.prototype, "searchVideos", null);
+__decorate([
+    (0, common_1.Get)("scrapImage"),
+    __param(0, (0, common_1.Query)("url")),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], VideoController.prototype, "scrapImage", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], VideoController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(":id/comments"),
+    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)("page", common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Query)("limit", common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Number]),
+    __metadata("design:returntype", void 0)
+], VideoController.prototype, "findComments", null);
 __decorate([
     (0, common_1.Post)("createComment"),
     __param(0, (0, common_1.Body)()),
@@ -103,43 +152,6 @@ __decorate([
     __metadata("design:paramtypes", [create_view_dto_1.CreateViewDTO]),
     __metadata("design:returntype", void 0)
 ], VideoController.prototype, "createView", null);
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("page", common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Query)("limit", common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
-    __metadata("design:returntype", void 0)
-], VideoController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)("seed"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], VideoController.prototype, "seedVideo", null);
-__decorate([
-    (0, common_1.Get)("search"),
-    __param(0, (0, common_1.Query)("q")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], VideoController.prototype, "searchVideos", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], VideoController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Get)(":id/comments"),
-    __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Query)("page", common_1.ParseIntPipe)),
-    __param(2, (0, common_1.Query)("limit", common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Number]),
-    __metadata("design:returntype", void 0)
-], VideoController.prototype, "findComments", null);
 __decorate([
     (0, common_1.Patch)(":id"),
     __param(0, (0, common_1.Param)("id", common_1.ParseIntPipe)),

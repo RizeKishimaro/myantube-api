@@ -1,3 +1,4 @@
+import { StreamableFile } from "@nestjs/common";
 import { CreateVideoDto } from "./dto/create-video.dto";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { PrismaService } from "../utils/prisma.service";
@@ -5,6 +6,7 @@ import { CreateLikeDTO } from "./dto/create-like.dto";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
 import { CreateViewDTO } from "./dto/create-view.dto";
 import { FactoryService } from "../factory/factory.service";
+import { Response } from "express";
 export declare class VideoService {
     private readonly prismaService;
     private readonly factoryService;
@@ -34,9 +36,8 @@ export declare class VideoService {
         video: {
             id: number;
             title: string;
-            urlHd: string;
-            urlSd: string;
             description: string;
+            duration: number;
             poster: string;
             status: {
                 likes: number;
@@ -48,7 +49,7 @@ export declare class VideoService {
     findOne(videoId: number): Promise<{
         uploader: {
             name: string;
-            picture: string;
+            profile: string;
             id: string;
         };
         video: {
@@ -73,6 +74,7 @@ export declare class VideoService {
             };
         };
     }>;
+    fetchImage(imageUrl: string, res: Response): Promise<StreamableFile>;
     update(id: number, updateVideoDto: UpdateVideoDto): Promise<void>;
     remove(id: number): Promise<void>;
     createComment(createCommentDTO: CreateCommentDTO): Promise<void>;

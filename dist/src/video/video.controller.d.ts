@@ -5,15 +5,11 @@ import { ResponseHelper } from "../utils/responseHelper.service";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
 import { CreateLikeDTO } from "./dto/create-like.dto";
 import { CreateViewDTO } from "./dto/create-view.dto";
+import { Response } from "express";
 export declare class VideoController {
     private readonly videoService;
     private readonly responseHelper;
     constructor(videoService: VideoService, responseHelper: ResponseHelper);
-    createComment(createCommentDTO: CreateCommentDTO): Promise<void>;
-    addOrRemoveLike(createLikeDTO: CreateLikeDTO): Promise<void>;
-    create(createVideoDto: CreateVideoDto): Promise<void>;
-    addOrRemoveDislike(createLikeDTO: CreateLikeDTO): Promise<void>;
-    createView(createViewDTO: CreateViewDTO): Promise<void>;
     findAll(page: number, limit: number): Promise<{
         author: {
             id: string;
@@ -23,9 +19,8 @@ export declare class VideoController {
         video: {
             id: number;
             title: string;
-            urlHd: string;
-            urlSd: string;
             description: string;
+            duration: number;
             poster: string;
             status: {
                 likes: number;
@@ -50,6 +45,7 @@ export declare class VideoController {
         oauthUserId: string;
         uploadedAt: Date;
     }[]>;
+    scrapImage(image: string, response: Response): Promise<void>;
     findOne(id: number): Promise<{
         statusCode: number;
         message: string;
@@ -63,6 +59,11 @@ export declare class VideoController {
         author_profile: string;
         createdAt: Date;
     }[]>;
+    createComment(createCommentDTO: CreateCommentDTO): Promise<void>;
+    addOrRemoveLike(createLikeDTO: CreateLikeDTO): Promise<void>;
+    create(createVideoDto: CreateVideoDto): Promise<void>;
+    addOrRemoveDislike(createLikeDTO: CreateLikeDTO): Promise<void>;
+    createView(createViewDTO: CreateViewDTO): Promise<void>;
     update(id: string, updateVideoDto: UpdateVideoDto): Promise<void>;
     remove(id: number): Promise<void>;
 }

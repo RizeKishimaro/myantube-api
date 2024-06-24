@@ -18,6 +18,7 @@ const axios_1 = require("axios");
 const stream_service_1 = require("./stream.service");
 const prisma_service_1 = require("../utils/prisma.service");
 const factory_service_1 = require("../factory/factory.service");
+const child_process_1 = require("child_process");
 let StreamController = class StreamController {
     constructor(streamService, prisma, factoryService) {
         this.streamService = streamService;
@@ -39,16 +40,15 @@ let StreamController = class StreamController {
             select: {
                 urlHd: true,
                 urlSd: true,
+                poster: true,
             },
         });
         if (!query) {
-            throw new common_1.BadRequestException({
-                code: 404,
-                message: 'Video not found.',
-            });
+            throw new common_1.NotFoundException('Video not found.');
         }
         const videoUrl = query.urlHd || query.urlSd;
         try {
+            await axios_1.default.get(query.poster);
             const headResponse = await axios_1.default.head(videoUrl);
             const videoSize = headResponse.headers['content-length'];
             const videoType = headResponse.headers['content-type'] || 'video/mp4';
@@ -71,19 +71,25 @@ let StreamController = class StreamController {
             videoResponse.data.pipe(response);
         }
         catch (error) {
+            console.log(error);
             if (error.response.status === 403) {
                 const { originalUrl } = await this.prisma.video.findUnique({
                     where: { id },
                 });
-                const urlData = await this.factoryService.scrapFacebookURL(originalUrl);
-                await this.prisma.video.update({
-                    where: { id },
-                    data: {
-                        duration: urlData.duration_ms,
-                        originalUrl: urlData.url,
-                        urlHd: urlData.hd,
-                        urlSd: urlData.sd,
-                    },
+                const child = (0, child_process_1.exec)(`node index.js ${originalUrl}`, async (error, urlData, stderr) => {
+                    await this.prisma.video.update({
+                        where: { id },
+                        data: {
+                            duration: urlData.duration_ms,
+                            originalUrl: urlData.url,
+                            urlHd: urlData.hd,
+                            urlSd: urlData.sd,
+                            poster: urlData.thumbnail
+                        },
+                    });
+                    if (error !== null) {
+                        console.log(`exec error: ${error}`);
+                    }
                 });
             }
             console.error("Error streaming video:", error.response);

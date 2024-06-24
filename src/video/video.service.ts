@@ -48,7 +48,12 @@ export class VideoService {
   async findAll(page = 0, limit = 10) {
     const skip = page * limit;
     const data = await this.prismaService.video.findMany({
-      include: {
+      select: {
+                id: true,
+        duration: true,
+        title: true,
+        poster: true,
+ 
         _count: {
           select: {
             likes: true,
@@ -71,12 +76,7 @@ export class VideoService {
           },
         },
       },
-      select: {
-        id: true,
-        duration: true,
-        title: true,
-        poster: true,
-      },
+     
       skip,
       take: limit,
     });
@@ -89,7 +89,6 @@ export class VideoService {
         _count,
         duration,
         id,
-        description,
       }) => {
         return {
           author: {
@@ -100,7 +99,6 @@ export class VideoService {
           video: {
             id,
             title,
-            description,
             duration,
             poster,
             status: {
