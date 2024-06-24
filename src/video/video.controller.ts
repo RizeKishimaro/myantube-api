@@ -44,7 +44,8 @@ export class VideoController {
   }
   @Get("scrapImage")
   async scrapImage(@Query("url") image: string,@Res() response:Response){
-    return this.videoService.streamImage(image,response)
+const file = await this.videoService.fetchImage(image, response);
+    file.getStream().pipe(response);
   }
   @Get(":id")
   async findOne(@Param("id", ParseIntPipe) id: number) {
