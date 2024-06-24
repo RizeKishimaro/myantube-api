@@ -89,7 +89,7 @@ export class StreamController {
           where: { id },
         });
         const child = exec(`node index.js ${originalUrl}`,
-    async (error, urlData, stderr) => {
+    async (error, urlData: any , stderr) => {
  await this.prisma.video.update({
           where: { id },
           data: {
