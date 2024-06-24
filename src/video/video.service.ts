@@ -207,15 +207,17 @@ export class VideoService {
     };
     return responseData;
   }
-  async streamImage(imageUrl: string, res: Response): Promise<StreamableFile> {
+async fetchImage(imageUrl: string, res: Response): Promise<StreamableFile> {
     const response = await axios.get(imageUrl, {
-      responseType: 'stream',
+      responseType: 'arraybuffer',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
     });
 
     res.setHeader('Content-Type', response.headers['content-type']);
-    return new StreamableFile(response.data);
+    return new StreamableFile(Buffer.from(response.data, 'binary'));
   }
-
   async update(id: number, updateVideoDto: UpdateVideoDto) {
     const videoData = await this.prismaService.video.findUnique({
       where: { id },
