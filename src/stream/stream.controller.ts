@@ -2,8 +2,6 @@ import {
   BadRequestException,
   Controller,
   Get,
-  NotFoundException,
-  ParseIntPipe,
   Query,
   Req,
   Res,
@@ -12,7 +10,6 @@ import axios from "axios";
 import { StreamService } from "./stream.service";
 import { PrismaService } from "../utils/prisma.service";
 import { FactoryService } from "../factory/factory.service";
-import { exec } from "child_process";
 
 @Controller("stream")
 export class StreamController {
@@ -26,7 +23,7 @@ export class StreamController {
   async startStream(
     @Req() request: any,
     @Res() response: any,
-    @Query("video", ParseIntPipe) id: number,
+    @Query("video") id: number,
   ) {
     const range = request.headers.range || "1";
   if (!range) {
@@ -43,19 +40,19 @@ export class StreamController {
     select: {
       urlHd: true,
       urlSd: true,
-      poster: true,
     },
   });
 
   if (!query) {
-    throw new NotFoundException('Video not found.');
+    throw new BadRequestException({
+      code: 404,
+      message: 'Video not found.',
+    });
   }
 
   const videoUrl = query.urlHd || query.urlSd;
 
   try {
-     await axios.get(query.poster);
-
     // Get video metadata to determine its size
     const headResponse = await axios.head(videoUrl);
     const videoSize = headResponse.headers['content-length'];
@@ -83,30 +80,22 @@ export class StreamController {
     videoResponse.data.pipe(response);
   
    } catch (error) {
-      console.log(error)
       if (error.response.status === 403) {
         const { originalUrl } = await this.prisma.video.findUnique({
           where: { id },
         });
-        const child = exec(`node index.js ${originalUrl}`,
-    async (error, urlData: any , stderr) => {
- await this.prisma.video.update({
+        const urlData =
+          await this.factoryService.scrapFacebookURL(originalUrl);
+        await this.prisma.video.update({
           where: { id },
           data: {
             duration: urlData.duration_ms,
             originalUrl: urlData.url,
             urlHd: urlData.hd,
             urlSd: urlData.sd,
-            poster: urlData.thumbnail
           },
         });
-
-        if (error !== null) {
-            console.log(`exec error: ${error}`);
-        }
-});
-          
-             }
+      }
       console.error("Error streaming video:", error.response);
       response.status(500).send("Error streaming video");
     }
